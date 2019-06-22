@@ -53,7 +53,7 @@ public:
   int maxExtent() const {
     auto d = diag();
     if (d.x > d.y) return d.x > d.z ? 0 : 2;
-    return d.y > d.z ? 1: 2;
+    return d.y > d.z ? 1 : 2;
   }
 
   bool intersect(const Ray& ray, const Vector3f& invDir, const int dirIsNeg[3]) const {

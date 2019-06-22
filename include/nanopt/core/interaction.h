@@ -12,5 +12,4 @@ struct  Interaction {
   Vector3f wo;
 };
 
-
 }

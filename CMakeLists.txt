@@ -18,21 +18,25 @@ add_compile_options(-Wall -Wextra -pedantic -Wno-unused-parameter -Werror)
 
 set(
   NANOPT_HEADERS
-
+  include/nanopt/accelerators/bvh.h
   include/nanopt/core/interaction.h
+  include/nanopt/core/primitive.h
+  include/nanopt/core/camera.h
+  include/nanopt/core/film.h
   include/nanopt/core/ray.h
   include/nanopt/core/spectrum.h
   include/nanopt/core/triangle.h
-
+  include/nanopt/math/math.h
   include/nanopt/math/bounds3.h
   include/nanopt/math/vector2.h
   include/nanopt/math/vector3.h
-
   include/nanopt/utils/objloader.h
 )
 
 set(
   NANOPT_SRCS
+  src/accelerators/bvh.cpp
+  src/core/triangle.cpp
   src/utils/objloader.cpp
 )
 
