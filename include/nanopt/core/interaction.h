@@ -1,6 +1,5 @@
 #pragma once
 
-#include <nanopt/math/vector2.h>
 #include <nanopt/core/ray.h>
 
 namespace nanopt {

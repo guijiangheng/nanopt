@@ -10,8 +10,7 @@ public:
   Ray(
     const Vector3f& o,
     const Vector3f& d,
-    float tMax = Infinity) noexcept
-      : o(o), d(d), tMax(tMax)
+    float tMax = Infinity) noexcept : o(o), d(d), tMax(tMax)
   { }
 
   Vector3f operator()(float t) const {

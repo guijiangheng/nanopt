@@ -6,6 +6,7 @@ namespace nanopt {
 Matrix4& Matrix4::inverse() {
   int idxr[4], idxc[4];
   bool visited[4] = { false, false, false, false };
+
   for (auto i = 0; i < 4; ++i) {
     auto row = 0;
     auto col = 0;
@@ -20,27 +21,36 @@ Matrix4& Matrix4::inverse() {
         col = c;
       }
     }
+
     if (pivot == 0) throw std::exception();
+
     visited[col] = true;
     if (row != col)
       for (auto c = 0; c < 4; ++c) std::swap(e[row][c], e[col][c]);
+
     idxr[i] = row;
     idxc[i] = col;
     auto inv = 1 / e[col][col];
     e[col][col] = 1;
-    for (auto c = 0; c < 4; ++c) e[col][c] *= inv;
+
+    for (auto c = 0; c < 4; ++c)
+      e[col][c] *= inv;
+
     for (auto r = 0; r < 4; ++r) {
       if (r == col) continue;
       auto tmp = e[r][col];
       e[r][col] = 0;
-      for (auto c = 0; c < 4; ++c) e[r][c] -= e[col][c] * tmp;
+      for (auto c = 0; c < 4; ++c)
+        e[r][c] -= e[col][c] * tmp;
     }
   }
+
   for (auto i = 2; i >= 0; --i) {
     if (idxr[i] == idxc[i]) continue;
     for (auto r = 0; r < 4; ++r)
       std::swap(e[r][idxr[i]], e[r][idxc[i]]);
   }
+
   return *this;
 }
 

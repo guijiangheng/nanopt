@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <memory>
 #include <nanopt/core/primitive.h>
 
@@ -14,10 +15,12 @@ struct Mesh {
   Mesh(
     ShadingMode shadingMode,
     int nVertices, int nTriangles,
-    int* indices, Vector3f* p, Vector3f* n, Vector2f* uv) noexcept :
-      shadingMode(shadingMode),
-      nVertices(nVertices), nTriangles(nTriangles),
-      indices(indices), p(p), n(n), uv(uv)
+    int* indices, Vector3f* p, Vector3f* n, Vector2f* uv) noexcept
+      : shadingMode(shadingMode)
+      , nVertices(nVertices)
+      , nTriangles(nTriangles)
+      , indices(indices)
+      , p(p), n(n), uv(uv)
   { }
 
   ShadingMode shadingMode;
@@ -49,9 +52,9 @@ public:
     auto& b = mesh.p[indices[1]];
     auto& c = mesh.p[indices[2]];
     if (!mesh.uv || mesh.shadingMode == ShadingMode::Flat) {
-      auto ab = b - a;
-      auto ac = c - a;
-      return normalize(cross(ab, ac));
+      auto e1 = b - a;
+      auto e2 = c - a;
+      return normalize(cross(e2, e1));
     }
     return normalize(a * (1 - st.x - st.y) + b * st.x + c * st.y);
   }
@@ -71,5 +74,13 @@ private:
   const Mesh& mesh;
   const int* indices;
 };
+
+inline std::vector<Primitive*> createTriangleMesh(const Mesh& mesh) {
+  std::vector<Primitive*> triangles;
+  triangles.reserve(mesh.nTriangles);
+  for (auto i = 0; i < mesh.nTriangles; ++i)
+    triangles.push_back(new Triangle(mesh, i));
+  return triangles;
+}
 
 }

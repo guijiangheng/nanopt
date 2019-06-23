@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cmath>
+#include <nanopt/math/vector3.h>
 
 namespace nanopt {
 
@@ -12,6 +12,9 @@ public:
   { }
 
   Spectrum(float x, float y, float z) noexcept : e { x, y, z }
+  { }
+
+  explicit Spectrum(const Vector3f& v) noexcept : e { v.x, v.y, v.z }
   { }
 
   Spectrum operator+(const Spectrum& rhs) const {

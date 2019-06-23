@@ -18,23 +18,40 @@ add_compile_options(-Wall -Wextra -pedantic -Wno-unused-parameter -Werror)
 
 set(
   NANOPT_HEADERS
+
+  include/nanopt/nanopt.h
+
   include/nanopt/accelerators/bvh.h
+
   include/nanopt/core/interaction.h
   include/nanopt/core/primitive.h
   include/nanopt/core/camera.h
   include/nanopt/core/film.h
+  include/nanopt/core/integrator.h
   include/nanopt/core/ray.h
+  include/nanopt/core/sampler.h
+  include/nanopt/core/scene.h
   include/nanopt/core/spectrum.h
   include/nanopt/core/triangle.h
+
+  include/nanopt/cameras/perspective.h
+
+  include/nanopt/integrators/normal.h
+
   include/nanopt/math/math.h
+  include/nanopt/math/bounds2.h
   include/nanopt/math/bounds3.h
   include/nanopt/math/vector2.h
   include/nanopt/math/vector3.h
+
+  include/nanopt/samplers/random.h
+
   include/nanopt/utils/objloader.h
 )
 
 set(
   NANOPT_SRCS
+  src/math/matrix4.cpp
   src/accelerators/bvh.cpp
   src/core/triangle.cpp
   src/utils/objloader.cpp
@@ -64,7 +81,7 @@ add_library(
 )
 
 target_include_directories(
-  nanopt PRIVATE
+  nanopt PUBLIC
   "${CMAKE_CURRENT_SOURCE_DIR}/include"
 )
 
@@ -72,9 +89,15 @@ target_compile_features(nanopt PRIVATE cxx_std_17)
 target_link_libraries(nanopt PRIVATE imageio)
 
 add_executable(imageio-test src/tests/imageio-test.cpp)
-target_compile_features(imageio-test PRIVATE cxx_std_17)
-target_link_libraries(imageio-test PRIVATE nanopt)
-target_include_directories(
-  imageio-test PRIVATE
-  "${CMAKE_CURRENT_SOURCE_DIR}/include"
+add_executable(fireplace-root src/main/fireplace-room.cpp)
+
+set(
+  NANOPT_EXES
+  imageio-test
+  fireplace-root
 )
+
+foreach(target ${NANOPT_EXES})
+  target_link_libraries(${target} PRIVATE nanopt)
+  target_compile_features(${target} PRIVATE cxx_std_17)
+endforeach()

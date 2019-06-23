@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <nanopt/math/vector2.h>
 
 namespace nanopt {
 
@@ -10,6 +11,9 @@ public:
   Vector3() = default;
 
   explicit Vector3(T x) noexcept : x(x), y(x), z(x)
+  { }
+
+  explicit Vector3(const Vector2<T>& v) noexcept : x(v.x), y(v.y), z(0)
   { }
 
   Vector3(T x, T y, T z) noexcept : x(x), y(y), z(z)

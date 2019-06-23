@@ -13,6 +13,10 @@ public:
   Vector2(T x, T y) noexcept : x(x), y(y)
   { }
 
+  template <typename U>
+  explicit Vector2(const Vector2<U>& v) noexcept : x((T)v.x), y((T)v.y)
+  { }
+
   T& operator[](int index) {
     return (&x)[index];
   }

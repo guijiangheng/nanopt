@@ -18,20 +18,19 @@ public:
     float m00, float m01, float m02, float m03,
     float m10, float m11, float m12, float m13,
     float m20, float m21, float m22, float m23,
-    float m30, float m31, float m32, float m33
-  ) noexcept : e {
-    m00, m01, m02, m03,
-    m10, m11, m12, m13,
-    m20, m21, m22, m23,
-    m30, m31, m32, m33
-  } { }
+    float m30, float m31, float m32, float m33) noexcept : e {
+      m00, m01, m02, m03,
+      m10, m11, m12, m13,
+      m20, m21, m22, m23,
+      m30, m31, m32, m33 }
+  { }
 
   Matrix4 operator*(const Matrix4& m) const {
     float r[4][4];
     for (auto i = 0; i < 4; ++i)
       for (auto j = 0; j < 4; ++j)
         r[i][j] = e[i][0] * m.e[0][j] + e[i][1] * m.e[1][j] +
-              e[i][2] * m.e[2][j] + e[i][3] * m.e[3][j];
+                  e[i][2] * m.e[2][j] + e[i][3] * m.e[3][j];
     return Matrix4(r);
   }
 

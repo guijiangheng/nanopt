@@ -16,8 +16,8 @@ inline void safe_next(char*& str, char c) {
   if (*str) ++str;
 }
 
-inline bool eq(char* a, const char* b, int n) {
-  return std::strncmp(a, b, n) && a[n] == ' ';
+inline bool eq(const char* a, const char* b, int n) {
+  return !std::strncmp(a, b, n) && a[n] == ' ';
 }
 
 inline Vector2f vec2(char*& str) {
@@ -137,7 +137,8 @@ Mesh loadMeshOBJ(const std::string& filename) {
 
   return Mesh(
     ShadingMode::Flat,
-    positions.size(), indices.size(),
+    positions.size(),
+    indices.size() / 3,
     index, p, n, uv
   );
 }
