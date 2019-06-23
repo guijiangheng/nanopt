@@ -4,3 +4,6 @@
 [submodule "ext/openexr"]
 	path = ext/openexr
 	url = https://github.com/wjakob/openexr.git
+[submodule "ext/zlib"]
+	path = ext/zlib
+	url = https://github.com/mitsuba-renderer/zlib.git

@@ -1,5 +1,8 @@
+.vs/
 .idea/
 .vscode/
+out/
 build/
 scenes/
 cmake-build-debug/
+CMakeSettings.json

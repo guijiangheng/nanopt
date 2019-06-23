@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <algorithm>
 #include <nanopt/math/vector2.h>
 
 namespace nanopt {

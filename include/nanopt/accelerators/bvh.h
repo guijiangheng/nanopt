@@ -6,8 +6,8 @@
 
 namespace nanopt {
 
-class BVHNode;
-class PrimInfo;
+struct BVHNode;
+struct PrimInfo;
 
 struct LinearBVHNode {
   Bounds3f bounds;

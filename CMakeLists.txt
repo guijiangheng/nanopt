@@ -14,15 +14,15 @@ if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 add_subdirectory(ext)
-add_compile_options(-Wall -Wextra -pedantic -Wno-unused-parameter -Werror)
+
+if (CMAKE_COMPILER_IS_GNUCXX)
+  add_compile_options(-Wall -Wextra -pedantic -Wno-unused-parameter -Werror)
+endif()
 
 set(
   NANOPT_HEADERS
-
   include/nanopt/nanopt.h
-
   include/nanopt/accelerators/bvh.h
-
   include/nanopt/core/interaction.h
   include/nanopt/core/primitive.h
   include/nanopt/core/camera.h
@@ -33,19 +33,14 @@ set(
   include/nanopt/core/scene.h
   include/nanopt/core/spectrum.h
   include/nanopt/core/triangle.h
-
   include/nanopt/cameras/perspective.h
-
   include/nanopt/integrators/normal.h
-
   include/nanopt/math/math.h
   include/nanopt/math/bounds2.h
   include/nanopt/math/bounds3.h
   include/nanopt/math/vector2.h
   include/nanopt/math/vector3.h
-
   include/nanopt/samplers/random.h
-
   include/nanopt/utils/objloader.h
 )
 
@@ -71,8 +66,12 @@ target_include_directories(
 )
 
 target_compile_features(imageio PRIVATE cxx_std_14)
-target_compile_options(imageio PRIVATE -Wno-deprecated)
-target_link_libraries(imageio PRIVATE ${OPENEXR_LIBS} lodepng stdc++fs)
+target_link_libraries(imageio PRIVATE ${OPENEXR_LIBS} lodepng)
+
+if(CMAKE_COMPILER_IS_GNUCXX)
+  target_link_libraries(imageio PRIVATE stdc++fs)
+  target_compile_options(imageio PRIVATE -Wno-deprecated)
+endif()
 
 add_library(
   nanopt STATIC
@@ -88,13 +87,15 @@ target_include_directories(
 target_compile_features(nanopt PRIVATE cxx_std_17)
 target_link_libraries(nanopt PRIVATE imageio)
 
+add_executable(ajax src/main/ajax.cpp)
 add_executable(imageio-test src/tests/imageio-test.cpp)
-add_executable(fireplace-root src/main/fireplace-room.cpp)
+add_executable(fireplace-room src/main/fireplace-room.cpp)
 
 set(
   NANOPT_EXES
+  ajax
   imageio-test
-  fireplace-root
+  fireplace-room
 )
 
 foreach(target ${NANOPT_EXES})

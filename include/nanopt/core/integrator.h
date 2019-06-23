@@ -26,7 +26,7 @@ public:
         auto ray = camera.generateRay(cameraSample);
         l += li(ray, scene);
       } while (sampler.startNextSample());
-      camera.film.pixels[offset++] = l / sampler.samplesPerPixel;
+      camera.film.pixels[offset++] = l / (float)sampler.samplesPerPixel;
     }
   }
 

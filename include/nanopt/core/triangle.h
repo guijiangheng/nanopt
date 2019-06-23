@@ -48,14 +48,17 @@ public:
   }
 
   Vector3f getNormal(const Vector2f& st) const {
-    auto& a = mesh.p[indices[0]];
-    auto& b = mesh.p[indices[1]];
-    auto& c = mesh.p[indices[2]];
-    if (!mesh.uv || mesh.shadingMode == ShadingMode::Flat) {
+    if (!mesh.n || mesh.shadingMode == ShadingMode::Flat) {
+      auto& a = mesh.p[indices[0]];
+      auto& b = mesh.p[indices[1]];
+      auto& c = mesh.p[indices[2]];
       auto e1 = b - a;
       auto e2 = c - a;
       return normalize(cross(e2, e1));
     }
+    auto& a = mesh.n[indices[0]];
+    auto& b = mesh.n[indices[1]];
+    auto& c = mesh.n[indices[2]];
     return normalize(a * (1 - st.x - st.y) + b * st.x + c * st.y);
   }
 

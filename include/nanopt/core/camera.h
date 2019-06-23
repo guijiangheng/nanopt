@@ -33,7 +33,7 @@ public:
       const Matrix4& cameraToScreen,
       const Bounds2f& screenWindow) noexcept : Camera(frame, film) {
     auto screenToRaster =
-      Matrix4::scale(film.resolution.x, film.resolution.y, 1) *
+      Matrix4::scale((float)film.resolution.x, (float)film.resolution.y, 1) *
       Matrix4::scale(
         1 / (screenWindow.pMax.x - screenWindow.pMin.x),
         1 / (screenWindow.pMin.y - screenWindow.pMax.y), 1) *

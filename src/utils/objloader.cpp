@@ -1,45 +1,37 @@
 #include <cstring>
 #include <fstream>
+#include <sstream>
 #include <vector>
 #include <unordered_map>
 #include <nanopt/utils/objloader.h>
 
 namespace nanopt {
 
-inline void next(char*& str, char c) {
-  while (*str != c) ++str;
-  ++str;
-}
-
-inline void safe_next(char*& str, char c) {
-  while (*str && *str != c) ++str;
-  if (*str) ++str;
-}
-
-inline bool eq(const char* a, const char* b, int n) {
-  return !std::strncmp(a, b, n) && a[n] == ' ';
-}
-
-inline Vector2f vec2(char*& str) {
-  auto x = (float)std::atof(str); next(str, ' ');
-  auto y = (float)std::atof(str);
-  return { x, y };
-}
-
-inline Vector3f vec3(char*& str) {
-  auto x = (float)std::atof(str); next(str, ' ');
-  auto y = (float)std::atof(str); next(str, ' ');
-  auto z = (float)std::atof(str);
-  return { x, y, z };
+std::vector<std::string> tokenize(const std::string& string, const std::string& delim) {
+  std::vector<std::string> tokens;
+  std::string::size_type lastPos = 0;
+  auto pos = string.find_first_of(delim, lastPos);
+  while (lastPos != std::string::npos) {
+    tokens.push_back(string.substr(lastPos, pos - lastPos));
+    lastPos = pos;
+    if (lastPos != std::string::npos) {
+      lastPos += 1;
+      pos = string.find_first_of(delim, lastPos);
+    }
+  }
+  return tokens;
 }
 
 struct Vertex {
   Vertex() = default;
 
-  Vertex(char*& str) noexcept {
-    p  = std::atoi(str); next(str, '/');
-    uv = std::atoi(str); next(str, '/');
-    n  = std::atoi(str);
+  Vertex(const std::string& string) {
+    auto tokens = tokenize(string, "/");
+    p = std::atoi(tokens[0].c_str());
+    if (tokens.size() >= 2 && !tokens[1].empty())
+      uv = std::atoi(tokens[1].c_str());
+    if (tokens.size() == 3 && !tokens[2].empty())
+      n = std::atoi(tokens[2].c_str());
   }
 
   bool operator==(const Vertex& v) const {
@@ -72,29 +64,40 @@ Mesh loadMeshOBJ(const std::string& filename) {
   };
   std::unordered_map<Vertex, int, decltype(hash)> map(200, hash);
 
-  char line[1024];
-  while (file.getline(line, 1024)) {
-    auto str = line;
-    if (eq(str, "v", 1)) {
-      positions.emplace_back(vec3(str += 2));
-    } else if (eq(str, "n", 1)) {
-      normals.emplace_back(vec3(str += 2));
-    } else if (eq(str, "vt", 2)) {
-      uvs.emplace_back(vec2(str += 3));
-    } else if (eq(str, "f", 1)) {
-      str += 2;
+  std::string lineStr;
+  while (std::getline(file, lineStr)) {
+    std::istringstream line(lineStr);
+    std::string prefix;
+    line >> prefix;
+
+    if (prefix == "v") {
+      Vector3f p;
+      line >> p.x >> p.y >> p.z;
+      p.z = -p.z;
+      positions.push_back(p);
+    } else if (prefix == "vt") {
+      Vector2f uv;
+      line >> uv.x >> uv.y;
+      uvs.push_back(uv);
+    } else if (prefix == "vn") {
+      Vector3f n;
+      line >> n.x >> n.y >> n.z;
+      n.z = -n.z;
+      normals.push_back(n);
+    } else if (prefix == "f") {
       Vertex verts[6];
       auto nVerts = 3;
+      std::string v1, v2, v3, v4;
+      line >> v1 >> v2 >> v3 >> v4;
+      verts[0] = Vertex(v1);
+      verts[1] = Vertex(v2);
+      verts[2] = Vertex(v3);
 
-      verts[0] = Vertex(str); next(str, ' ');
-      verts[1] = Vertex(str); next(str, ' ');
-      verts[2] = Vertex(str); safe_next(str, ' ');
-
-      if (*str) {
-        nVerts = 6;
-        verts[3] = Vertex(str);
+      if (!v4.empty()) {
+        verts[3] = Vertex(v4);
         verts[4] = verts[0];
-        verts[5] = verts[1];
+        verts[5] = verts[2];
+        nVerts = 6;
       }
 
       for (auto i = 0; i < nVerts; ++i) {
