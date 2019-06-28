@@ -67,11 +67,12 @@ BVHNode* BVHAccel::createLeafNode(
     std::vector<Primitive*>& orderedPrims) const {
   ++totalNodes;
   Bounds3f bounds;
+  auto firstPrimOffset = (int)orderedPrims.size();
   for (auto i = start; i < end; ++i) {
     bounds.merge(primInfos[i].bounds);
     orderedPrims.push_back(primitives[primInfos[i].primIndex]);
   }
-  return new BVHNode(bounds, start, end - start);
+  return new BVHNode(bounds, firstPrimOffset, end - start);
 }
 
 BVHNode* BVHAccel::exhaustBuild(
