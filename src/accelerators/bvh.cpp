@@ -201,6 +201,7 @@ BVHNode* BVHAccel::sahBuild(
   auto mid = pmid - &primInfos[0];
 
   ++totalNodes;
+
   return new BVHNode(
     totalBounds, dim,
     sahBuild(primInfos, start, mid, totalNodes, orderedPrims),

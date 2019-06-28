@@ -23,7 +23,8 @@ std::vector<std::string> tokenize(const std::string& string, const std::string& 
 }
 
 struct Vertex {
-  Vertex() = default;
+  Vertex() noexcept : p(0), n(0), uv(0)
+  { }
 
   Vertex(const std::string& string) {
     auto tokens = tokenize(string, "/");

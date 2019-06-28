@@ -88,12 +88,14 @@ target_compile_features(nanopt PRIVATE cxx_std_17)
 target_link_libraries(nanopt PRIVATE imageio)
 
 add_executable(ajax src/main/ajax.cpp)
+add_executable(bunny src/main/bunny.cpp)
 add_executable(imageio-test src/tests/imageio-test.cpp)
 add_executable(fireplace-room src/main/fireplace-room.cpp)
 
 set(
   NANOPT_EXES
   ajax
+  bunny
   imageio-test
   fireplace-room
 )

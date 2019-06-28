@@ -1,7 +1,6 @@
 #include <experimental/filesystem>
 #include <nanopt/nanopt.h>
 
-using namespace std;
 using namespace nanopt;
 
 int main() {

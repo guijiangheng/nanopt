@@ -23,7 +23,7 @@ int main() {
   RandomSampler sampler(1);
   NormalIntegrator integrator(camera, sampler);
   integrator.render(scene);
-  film.writeImage("./image.png");
+  film.writeImage("./ajax.png");
 
   return 0;
 }
