@@ -122,7 +122,7 @@ public:
     return e[0] != rhs.e[0] || e[1] != rhs.e[1] || e[2] != rhs.e[2];
   }
 
-private:
+public:
   float e[3];
 };
 

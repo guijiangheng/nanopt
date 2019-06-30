@@ -24,7 +24,7 @@ void Integrator::render(const Scene& scene) {
         auto cameraSample = sampler.getCameraSample(p);
         auto ray = camera.generateRay(cameraSample);
         l += li(ray, scene);
-      } while (sampler.startNextSample());
+      } while (tileSampler->startNextSample());
       auto offsetX = p.x - pixelBounds.pMin.x;
       auto offsetY = p.y - pixelBounds.pMin.y;
       camera.film.pixels[offsetY * diag.x + offsetX] = l / tileSampler->samplesPerPixel;

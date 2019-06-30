@@ -7,7 +7,7 @@ namespace nanopt {
 
 class RandomSampler : public Sampler {
 public:
-  explicit RandomSampler(std::uint64_t samplesPerPixel) noexcept
+  explicit RandomSampler(std::int64_t samplesPerPixel) noexcept
     : Sampler(samplesPerPixel)
     , device()
     , generator(device())
