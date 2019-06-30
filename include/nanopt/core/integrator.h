@@ -3,6 +3,7 @@
 #include <nanopt/core/spectrum.h>
 #include <nanopt/core/scene.h>
 #include <nanopt/core/sampler.h>
+#include <nanopt/core/parallel.h>
 
 namespace nanopt {
 
@@ -16,19 +17,7 @@ public:
 
   virtual Spectrum li(const Ray& ray, const Scene& scene) const = 0;
 
-  void render(const Scene& scene) {
-    auto offset = 0;
-    for (auto p : camera.film.pixelBounds) {
-      Spectrum l(0);
-      sampler.startPixel();
-      do {
-        auto cameraSample = sampler.getCameraSample(p);
-        auto ray = camera.generateRay(cameraSample);
-        l += li(ray, scene);
-      } while (sampler.startNextSample());
-      camera.film.pixels[offset++] = l / (float)sampler.samplesPerPixel;
-    }
-  }
+  void render(const Scene& scene);
 
 private:
   const Camera& camera;

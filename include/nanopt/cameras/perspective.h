@@ -8,7 +8,7 @@ class PerspectiveCamera : public ProjectiveCamera {
 public:
   PerspectiveCamera(
     const Matrix4& frame, Film& film,
-    const Bounds2f screenWindow,
+    const Bounds2f& screenWindow,
     float fov) noexcept
       : ProjectiveCamera(
         frame, film,

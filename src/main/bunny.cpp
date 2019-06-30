@@ -1,4 +1,3 @@
-#include <iostream>
 #include <nanopt/nanopt.h>
 
 using namespace nanopt;
@@ -21,7 +20,9 @@ int main() {
   );
   RandomSampler sampler(1);
   NormalIntegrator integrator(camera, sampler);
+  parallelInit();
   integrator.render(scene);
+  parallelCleanup();
   film.writeImage("bunny.png");
   return 0;
 }

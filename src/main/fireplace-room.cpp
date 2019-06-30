@@ -1,4 +1,3 @@
-#include <experimental/filesystem>
 #include <nanopt/nanopt.h>
 
 using namespace nanopt;
@@ -24,7 +23,9 @@ int main() {
 
   RandomSampler sampler(4);
   NormalIntegrator integrator(camera, sampler);
+  parallelInit();
   integrator.render(scene);
+  parallelCleanup();
   film.writeImage("./fireplace-room.png");
 
   return 0;

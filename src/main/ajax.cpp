@@ -22,7 +22,9 @@ int main() {
 
   RandomSampler sampler(1);
   NormalIntegrator integrator(camera, sampler);
+  parallelInit();
   integrator.render(scene);
+  parallelCleanup();
   film.writeImage("./ajax.png");
 
   return 0;

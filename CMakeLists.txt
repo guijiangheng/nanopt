@@ -30,6 +30,7 @@ set(
   include/nanopt/core/integrator.h
   include/nanopt/core/ray.h
   include/nanopt/core/sampler.h
+  include/nanopt/core/parallel.h
   include/nanopt/core/scene.h
   include/nanopt/core/spectrum.h
   include/nanopt/core/triangle.h
@@ -46,9 +47,11 @@ set(
 
 set(
   NANOPT_SRCS
-  src/math/matrix4.cpp
   src/accelerators/bvh.cpp
+  src/core/integrator.cpp
   src/core/triangle.cpp
+  src/core/parallel.cpp
+  src/math/matrix4.cpp
   src/utils/objloader.cpp
 )
 
