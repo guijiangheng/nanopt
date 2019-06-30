@@ -2,7 +2,9 @@
 
 #include <vector>
 #include <memory>
+#include <nanopt/core/sampling.h>
 #include <nanopt/core/primitive.h>
+#include <nanopt/core/interaction.h>
 
 namespace nanopt {
 
@@ -67,6 +69,25 @@ public:
     auto& b = mesh.p[indices[1]];
     auto& c = mesh.p[indices[2]];
     return merge(Bounds3(a, b), c);
+  }
+
+  float area() const {
+    auto& a = mesh.p[indices[0]];
+    auto& b = mesh.p[indices[1]];
+    auto& c = mesh.p[indices[2]];
+    return cross(b - a, b - c).length() / 2;
+  }
+
+  Interaction sample(const Vector2f& u, float& pdf) const {
+    auto uv = uniformSampleTriangle(u);
+    auto& a = mesh.p[indices[0]];
+    auto& b = mesh.p[indices[1]];
+    auto& c = mesh.p[indices[2]];
+    Interaction isect;
+    isect.p = a * uv[0] + b * uv[1] + c * (1 - uv[0] - uv[1]);
+    isect.n = getNormal(uv);
+    pdf = 1 / area();
+    return isect;
   }
 
   bool intersect(const Ray& ray) const override;
