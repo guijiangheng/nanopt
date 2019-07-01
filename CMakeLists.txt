@@ -26,6 +26,8 @@ set(
   include/nanopt/core/interaction.h
   include/nanopt/core/primitive.h
   include/nanopt/core/camera.h
+  include/nanopt/core/distribution1d.h
+  include/nanopt/core/distribution2d.h
   include/nanopt/core/film.h
   include/nanopt/core/integrator.h
   include/nanopt/core/ray.h
@@ -48,6 +50,7 @@ set(
 set(
   NANOPT_SRCS
   src/accelerators/bvh.cpp
+  src/core/distribution1d.cpp
   src/core/integrator.cpp
   src/core/triangle.cpp
   src/core/parallel.cpp
