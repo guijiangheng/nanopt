@@ -1,4 +1,4 @@
-#include <experimental/filesystem>
+#include <filesystem>
 #include <lodepng/lodepng.h>
 #include <nanopt/utils/imageio.h>
 #include <ImfRgba.h>
@@ -6,7 +6,7 @@
 
 namespace nanopt {
 
-namespace fs = std::experimental::filesystem;
+namespace fs = std::filesystem;
 
 static Spectrum* readImagePNG(const std::string& filename, int& width, int& height) {
   unsigned xres, yres;

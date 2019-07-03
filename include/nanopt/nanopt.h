@@ -6,3 +6,4 @@
 #include <nanopt/integrators/normal.h>
 #include <nanopt/samplers/random.h>
 #include <nanopt/utils/objloader.h>
+#include <nanopt/utils/plyloader.h>
