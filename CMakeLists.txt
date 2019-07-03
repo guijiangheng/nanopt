@@ -97,6 +97,7 @@ target_link_libraries(nanopt PRIVATE imageio)
 
 add_executable(ajax src/main/ajax.cpp)
 add_executable(bunny src/main/bunny.cpp)
+add_executable(dragon src/main/dragon.cpp)
 add_executable(imageio-test src/tests/imageio-test.cpp)
 add_executable(fireplace-room src/main/fireplace-room.cpp)
 
@@ -104,6 +105,7 @@ set(
   NANOPT_EXES
   ajax
   bunny
+  dragon
   imageio-test
   fireplace-room
 )

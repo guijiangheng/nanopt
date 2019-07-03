@@ -1,7 +1,10 @@
 #include <string>
+#include <cstring>
 #include <fstream>
 #include <sstream>
+#include <memory>
 #include <vector>
+#include <nanopt/math/vector3.h>
 #include <nanopt/utils/plyloader.h>
 
 namespace nanopt {
@@ -42,8 +45,7 @@ public:
 template <typename T>
 class TypedListProperty : public Property {
 public:
-  TypedListProperty(const std::string& name) noexcept
-    : Property(name), listCountBytes(listCountBytes)
+  TypedListProperty(const std::string& name) noexcept : Property(name)
   { }
 
   void parse(std::istringstream& line) override {
@@ -62,7 +64,7 @@ public:
   void read(std::ifstream& stream) override {
     std::uint8_t n = 0;
     stream.read((char*)&n, 1);
-    auto count = (int) n;
+    auto count = (int)n;
     std::vector<T> vec;
     vec.reserve(count);
     for (auto i = 0; i < count; ++i) {
@@ -171,6 +173,7 @@ public:
     } else {
       std::string name;
       auto& type = token;
+      line >> name;
       elements.back().addProperty(createProperty(false, name, type));
     }
   }
@@ -186,7 +189,7 @@ public:
     for (auto& e : elements)
       for (auto i = 0; i < e.count; ++i) {
         std::string line;
-        std:getline(stream, line);
+        std::getline(stream, line);
         std::istringstream lineStream(line);
         for (auto& p : e.properties)
           p->parse(lineStream);
@@ -229,10 +232,10 @@ Mesh loadMeshPLY(const std::string& filename) {
   std::vector<int> indices;
   indices.reserve(faces->data.size() * 6);
   for (auto& face : faces->data) {
-    if (face.size() != 3 || face.size() != 4) continue;
-    indices.push_back(face[0]);
-    indices.push_back(face[1]);
-    indices.push_back(face[2]);
+    if (face.size() != 3 && face.size() != 4) continue;
+    indices.emplace_back(face[0]);
+    indices.emplace_back(face[1]);
+    indices.emplace_back(face[2]);
     if (face.size() == 4) {
       indices.emplace_back(face[3]);
       indices.emplace_back(face[0]);
