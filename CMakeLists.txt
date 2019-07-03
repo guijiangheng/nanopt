@@ -29,6 +29,7 @@ set(
   include/nanopt/core/distribution1d.h
   include/nanopt/core/distribution2d.h
   include/nanopt/core/film.h
+  include/nanopt/core/frame.h
   include/nanopt/core/integrator.h
   include/nanopt/core/mesh.h
   include/nanopt/core/ray.h
@@ -96,6 +97,7 @@ target_include_directories(
 target_compile_features(nanopt PRIVATE cxx_std_17)
 target_link_libraries(nanopt PRIVATE imageio)
 
+add_executable(ao src/main/ao.cpp)
 add_executable(ajax src/main/ajax.cpp)
 add_executable(bunny src/main/bunny.cpp)
 add_executable(dragon src/main/dragon.cpp)
@@ -104,6 +106,7 @@ add_executable(fireplace-room src/main/fireplace-room.cpp)
 
 set(
   NANOPT_EXES
+  ao
   ajax
   bunny
   dragon

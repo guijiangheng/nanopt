@@ -22,11 +22,11 @@ int main() {
   );
 
   RandomSampler sampler(4);
-  NormalIntegrator integrator(camera, sampler);
+  AmbientOcclusionIntegrator integrator(camera, sampler, 32);
   parallelInit();
   integrator.render(scene);
   parallelCleanup();
-  film.writeImage("./fireplace-room.png");
+  film.writeImage("./ao.png");
 
   return 0;
 }

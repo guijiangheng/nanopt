@@ -1,6 +1,7 @@
 # NanoPT: a tiny c++ path tracer
 
 ![fireplace-room](./gallery/fireplace-room.png)
+![fireplace-room](./gallery/ao.png)
 
 Nanopt is a tiny c++ path tracer written for learning Matt Pharr's book *" Physically Based Rendering: From Theory to Implementation"*. Most of code and ideas comes from PBRT, but with a lot simplification.
 

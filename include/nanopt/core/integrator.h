@@ -19,7 +19,7 @@ public:
 
   void render(const Scene& scene);
 
-private:
+protected:
   const Camera& camera;
   Sampler& sampler;
 };

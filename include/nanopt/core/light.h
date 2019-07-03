@@ -24,7 +24,6 @@ public:
     const Interaction& ref,
     const Vector2f& sample,
     Vector3f& wi, float& pdf, VisibilityTester& tester) const = 0;
-
 };
 
 }
