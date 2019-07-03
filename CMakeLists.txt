@@ -45,6 +45,7 @@ set(
   include/nanopt/math/vector3.h
   include/nanopt/samplers/random.h
   include/nanopt/utils/objloader.h
+  include/nanopt/utils/plyloader.h
 )
 
 set(
@@ -56,6 +57,7 @@ set(
   src/core/parallel.cpp
   src/math/matrix4.cpp
   src/utils/objloader.cpp
+  src/utils/plyloader.cpp
 )
 
 add_library(

@@ -136,7 +136,7 @@ Mesh loadMeshOBJ(const std::string& filename) {
       uv[i] = uvs[vertices[i].uv - 1];
   }
 
-  int* index = new int[indices.size()];
+  auto index = new int[indices.size()];
   memcpy(index, indices.data(), sizeof(int) * indices.size());
 
   return Mesh(
