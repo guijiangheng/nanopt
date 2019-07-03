@@ -1,38 +1,12 @@
 #pragma once
 
 #include <vector>
-#include <memory>
+#include <nanopt/core/mesh.h>
 #include <nanopt/core/sampling.h>
 #include <nanopt/core/primitive.h>
 #include <nanopt/core/interaction.h>
 
 namespace nanopt {
-
-enum class ShadingMode {
-  Flat,
-  Smooth
-};
-
-struct Mesh {
-  Mesh(
-    ShadingMode shadingMode,
-    int nVertices, int nTriangles,
-    int* indices, Vector3f* p, Vector3f* n, Vector2f* uv) noexcept
-      : shadingMode(shadingMode)
-      , nVertices(nVertices)
-      , nTriangles(nTriangles)
-      , indices(indices)
-      , p(p), n(n), uv(uv)
-  { }
-
-  ShadingMode shadingMode;
-  const int nVertices;
-  const int nTriangles;
-  std::unique_ptr<int[]> indices;
-  std::unique_ptr<Vector3f[]> p;
-  std::unique_ptr<Vector3f[]> n;
-  std::unique_ptr<Vector2f[]> uv;
-};
 
 class Triangle : public  Primitive {
 public:

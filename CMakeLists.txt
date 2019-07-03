@@ -30,6 +30,7 @@ set(
   include/nanopt/core/distribution2d.h
   include/nanopt/core/film.h
   include/nanopt/core/integrator.h
+  include/nanopt/core/mesh.h
   include/nanopt/core/ray.h
   include/nanopt/core/sampler.h
   include/nanopt/core/parallel.h

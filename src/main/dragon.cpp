@@ -3,7 +3,10 @@
 using namespace nanopt;
 
 int main() {
-  auto mesh = loadMeshPLY("../scenes/dragon.ply");
+  auto mesh = Mesh(
+    Matrix4::rotate(Vector3f(0, 1, 0), -53),
+    loadMeshPLY("../scenes/dragon.ply")
+  );
   auto triangles = createTriangleMesh(mesh);
   BVHAccel accel(std::move(triangles));
   Scene scene(accel);
