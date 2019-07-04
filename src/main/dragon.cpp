@@ -3,11 +3,33 @@
 using namespace nanopt;
 
 int main() {
-  auto mesh = Mesh(
+  auto dragon = Mesh(
     Matrix4::rotate(Vector3f(0, 1, 0), -53),
     loadMeshPLY("../scenes/dragon.ply")
   );
-  auto triangles = createTriangleMesh(mesh);
+
+  int indices[] = { 0, 1, 2, 2, 3, 0 };
+  Vector3f vertices[] = {
+    { -1000, -1000, -40 },
+    {  1000, -1000, -40 },
+    {  1000,  1000, -40 },
+    { -1000,  1000, -40 }
+  };
+
+  auto pIndices = new int[6];
+  memcpy(pIndices, indices, sizeof(int) * 6);
+  auto pVertices = new Vector3f[4];
+  memcpy(pVertices, vertices, sizeof(Vector3f) * 4);
+
+  auto plane = Mesh(
+    ShadingMode::Flat, 4, 2,
+    pIndices, pVertices, nullptr, nullptr
+  );
+
+  auto triangles = createTriangleMesh(dragon);
+  auto planeTriangles = createTriangleMesh(plane);
+  triangles.insert(triangles.begin(), planeTriangles.begin(), planeTriangles.end());
+
   BVHAccel accel(std::move(triangles));
   Scene scene(accel);
   Film film(Vector2i(800, 800));
