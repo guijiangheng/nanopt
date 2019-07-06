@@ -14,10 +14,6 @@ public:
 
   virtual bool isDelta() const = 0;
 
-  virtual Spectrum le(const Ray& ray) const {
-    return Spectrum(0);
-  }
-
   virtual float pdf(const Interaction& ref, const Vector3f& w) const = 0;
 
   virtual Spectrum sampleLi(

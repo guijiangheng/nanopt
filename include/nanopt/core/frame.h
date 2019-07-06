@@ -18,6 +18,10 @@ public:
     return s * p.x + t * p.y + n * p.z;
   }
 
+  static float cosTheta(const Vector3f& w) {
+    return w.z;
+  }
+
 public:
   Vector3f n, s, t;
 };

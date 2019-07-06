@@ -23,23 +23,28 @@ set(
   NANOPT_HEADERS
   include/nanopt/nanopt.h
   include/nanopt/accelerators/bvh.h
-  include/nanopt/core/interaction.h
-  include/nanopt/core/primitive.h
+  include/nanopt/bsdfs/diffuse.h
+  include/nanopt/core/bsdf.h
   include/nanopt/core/camera.h
   include/nanopt/core/distribution1d.h
   include/nanopt/core/distribution2d.h
   include/nanopt/core/film.h
   include/nanopt/core/frame.h
   include/nanopt/core/integrator.h
+  include/nanopt/core/interaction.h
   include/nanopt/core/mesh.h
   include/nanopt/core/ray.h
   include/nanopt/core/sampler.h
   include/nanopt/core/parallel.h
+  include/nanopt/core/primitive.h
   include/nanopt/core/scene.h
   include/nanopt/core/spectrum.h
   include/nanopt/core/triangle.h
   include/nanopt/cameras/perspective.h
+  include/nanopt/integrators/ao.h
   include/nanopt/integrators/normal.h
+  include/nanopt/integrators/path.h
+  include/nanopt/lights/point.h
   include/nanopt/math/math.h
   include/nanopt/math/bounds2.h
   include/nanopt/math/bounds3.h
@@ -99,6 +104,7 @@ target_link_libraries(nanopt PRIVATE imageio)
 
 add_executable(ao src/main/ao.cpp)
 add_executable(ajax src/main/ajax.cpp)
+add_executable(point src/main/point.cpp)
 add_executable(bunny src/main/bunny.cpp)
 add_executable(dragon src/main/dragon.cpp)
 add_executable(imageio-test src/tests/imageio-test.cpp)
@@ -109,6 +115,7 @@ set(
   ao
   ajax
   bunny
+  point
   dragon
   imageio-test
   fireplace-room

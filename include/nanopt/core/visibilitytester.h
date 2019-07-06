@@ -18,7 +18,7 @@ public:
 
 private:
   const Interaction* ref;
-  const Vector3f target;
+  Vector3f target;
 };
 
 }
