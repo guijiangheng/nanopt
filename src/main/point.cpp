@@ -6,8 +6,11 @@ int main() {
   auto mesh = loadMeshOBJ("../scenes/ajax.obj");
   auto triangles = createTriangleMesh(mesh);
   BVHAccel accel(std::move(triangles));
-  Scene scene(accel);
   Film film(Vector2i(900, 900));
+
+  std::vector<Light*> lights;
+  lights.push_back(new PointLight(Vector3f(-20, 40, -20), Spectrum(2992)));
+  Scene scene(accel, std::move(lights));
 
   PerspectiveCamera camera(
     Matrix4::lookAt(
@@ -21,7 +24,7 @@ int main() {
   );
 
   RandomSampler sampler(4);
-  NormalIntegrator integrator(camera, sampler);
+  PathIntegrator integrator(camera, sampler, 1);
   parallelInit();
   integrator.render(scene);
   parallelCleanup();

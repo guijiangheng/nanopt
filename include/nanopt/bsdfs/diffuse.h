@@ -13,7 +13,7 @@ public:
   { }
 
   bool isDelta() const override {
-    return true;
+    return false;
   }
 
   float pdf(const Vector3f& wo, const Vector3f& wi) const override {
@@ -21,13 +21,13 @@ public:
     return Frame::cosTheta(wi) * InvPi;
   }
 
-  Spectrum eval(const Vector3f& wo, const Vector3f& wi) const override {
+  Spectrum f(const Vector3f& wo, const Vector3f& wi) const override {
     if (Frame::cosTheta(wi) < 0) return Spectrum(0);
     return Spectrum(albedo * InvPi);
   }
 
   Spectrum sample(const Vector3f& wo, Vector3f& wi, const Vector2f& sample ) const override {
-    wi =consineSampleHemisphere(sample);
+    wi = consineSampleHemisphere(sample);
     return albedo;
   }
 

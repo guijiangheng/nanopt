@@ -8,15 +8,19 @@ Nanopt is a tiny c++ path tracer written for learning Matt Pharr's book *" Physi
 ## Building NanoPT
 
 To check out nanopt together with all dependencies, be sure to use the `--recursive` flag when cloning the repository, i.e.
+
 ```bash
 $ git clone --recursive https://github.com/guijiangheng/nanopt.git
 ```
+
 If you accidentally already cloned nanopt without this flag (or to update an nanopt source tree after a new submodule has been added, run the following command to also fetch the dependencies:
+
 ```bash
 $ git submodule update --init --recursive
 ```
 
 NanoPT uses [cmake](http://www.cmake.org/) for its build system. After clone the source code, use below commnads to start compling:
+
 ```bash
 mkdir build && cd build
 cmake ..

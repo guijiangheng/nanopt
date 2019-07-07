@@ -62,6 +62,8 @@ set(
   src/core/integrator.cpp
   src/core/triangle.cpp
   src/core/parallel.cpp
+  src/core/visibilitytester.cpp
+  src/integrators/path.cpp
   src/math/matrix4.cpp
   src/utils/objloader.cpp
   src/utils/plyloader.cpp

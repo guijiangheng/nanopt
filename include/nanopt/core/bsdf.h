@@ -10,7 +10,7 @@ public:
 
   virtual float pdf(const Vector3f&wo, const Vector3f& wi) const = 0;
 
-  virtual Spectrum eval(const Vector3f& wo, const Vector3f& wi) const = 0;
+  virtual Spectrum f(const Vector3f& wo, const Vector3f& wi) const = 0;
 
   virtual Spectrum sample(
     const Vector3f& wo,

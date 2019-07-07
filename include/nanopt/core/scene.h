@@ -28,7 +28,7 @@ public:
     return accel.intersect(ray);
   }
 
-private:
+public:
   const Primitive& accel;
   std::vector<Light*> lights;
 };
