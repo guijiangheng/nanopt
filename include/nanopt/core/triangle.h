@@ -53,6 +53,13 @@ public:
     return cross(b - a, b - c).length() / 2;
   }
 
+  float pdf(const Interaction& ref, const Vector3f& w) const {
+    Interaction isect;
+    auto ray = ref.spawnRay(w);
+    if (!intersect(ray, isect)) return 0;
+    return (isect.p - ref.p).lengthSquared() / (absdot(isect.n, w) * area());
+  }
+
   Interaction sample(const Vector2f& u, float& pdf) const {
     auto uv = uniformSampleTriangle(u);
     auto& a = mesh.p[indices[0]];
@@ -63,6 +70,14 @@ public:
     isect.n = getNormal(uv);
     pdf = 1 / area();
     return isect;
+  }
+
+  Interaction sample(const Interaction& ref, const Vector2f& u, float& pdf) const {
+    auto pLight = sample(u, pdf);
+    auto d = pLight.p - ref.p;
+    auto w = normalize(d);
+    pdf *= d.lengthSquared() / absdot(pLight.n, w);
+    return pLight;
   }
 
   bool intersect(const Ray& ray) const override;

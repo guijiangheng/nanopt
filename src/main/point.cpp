@@ -20,7 +20,7 @@ int main() {
       Vector3f(0.299858, 0.934836, 0.190177)
     ),
     film,
-    Bounds2f(Vector2f(-1, -1), Vector2f(1, 1)),
+    defaultScreenBounds(1),
     30
   );
 

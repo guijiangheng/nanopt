@@ -7,6 +7,7 @@
 #include <nanopt/integrators/normal.h>
 #include <nanopt/integrators/path.h>
 #include <nanopt/lights/point.h>
+#include <nanopt/lights/diffuse.h>
 #include <nanopt/samplers/random.h>
 #include <nanopt/materials/matte.h>
 #include <nanopt/utils/objloader.h>
