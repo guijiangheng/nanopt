@@ -3,8 +3,9 @@
 using namespace nanopt;
 
 int main() {
+  auto material = std::make_unique<MatteMaterial>(Spectrum(1));
   auto mesh = loadMeshOBJ("../scenes/ajax.obj");
-  auto triangles = createTriangleMesh(mesh);
+  auto triangles = createTriangleMesh(mesh, material.get());
   BVHAccel accel(std::move(triangles));
   Film film(Vector2i(900, 900));
 

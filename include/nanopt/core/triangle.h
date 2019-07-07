@@ -4,14 +4,15 @@
 #include <nanopt/core/mesh.h>
 #include <nanopt/core/sampling.h>
 #include <nanopt/core/primitive.h>
-#include <nanopt/core/interaction.h>
+#include <nanopt/core/material.h>
 
 namespace nanopt {
 
 class Triangle : public  Primitive {
 public:
-  Triangle(const Mesh& mesh, int triangleIndex)
+  Triangle(const Mesh& mesh, int triangleIndex, Material* material = nullptr)
     : mesh(mesh)
+    , material(material)
     , indices(mesh.indices.get() + triangleIndex * 3)
   { }
 
@@ -68,16 +69,17 @@ public:
 
   bool intersect(const Ray& ray, Interaction& isect) const override;
 
-private:
+public:
   const Mesh& mesh;
+  Material* material;
   const int* indices;
 };
 
-inline std::vector<Primitive*> createTriangleMesh(const Mesh& mesh) {
-  std::vector<Primitive*> triangles;
+inline std::vector<Triangle*> createTriangleMesh(const Mesh& mesh, Material* material = nullptr) {
+  std::vector<Triangle*> triangles;
   triangles.reserve(mesh.nTriangles);
   for (auto i = 0; i < mesh.nTriangles; ++i)
-    triangles.push_back(new Triangle(mesh, i));
+    triangles.push_back(new Triangle(mesh, i, material));
   return triangles;
 }
 

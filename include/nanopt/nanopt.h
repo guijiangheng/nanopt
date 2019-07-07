@@ -8,5 +8,6 @@
 #include <nanopt/integrators/path.h>
 #include <nanopt/lights/point.h>
 #include <nanopt/samplers/random.h>
+#include <nanopt/materials/matte.h>
 #include <nanopt/utils/objloader.h>
 #include <nanopt/utils/plyloader.h>

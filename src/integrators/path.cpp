@@ -7,8 +7,11 @@ namespace nanopt {
 
 Spectrum PathIntegrator::li(const Ray& ray, const Scene& scene) const {
   Interaction isect;
-  if (scene.intersect(ray, isect))
-    return sampleOneLight(isect, scene);
+  if (scene.intersect(ray, isect)) {
+    isect.computeScatteringFunctions();
+    if (isect.bsdf)
+      return sampleOneLight(isect, scene);
+  }
   return Spectrum(0);
 }
 
@@ -25,8 +28,7 @@ Spectrum PathIntegrator::estimateDirect(
   if (li.isBlack()) return Spectrum(0);
 
   Frame frame(faceForward(isect.n, isect.wo));
-  auto bsdf = std::make_unique<Diffuse>(Spectrum(1));
-  auto f = bsdf->f(frame.toLocal(isect.wo), frame.toLocal(wi));
+  auto f = isect.bsdf->f(frame.toLocal(isect.wo), frame.toLocal(wi));
 
   if (!f.isBlack() && tester.unoccluded(scene))
     return f * absdot(isect.n, wi) * li / pdf;

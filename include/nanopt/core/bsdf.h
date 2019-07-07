@@ -6,6 +6,8 @@ namespace nanopt {
 
 class BSDF {
 public:
+  virtual ~BSDF() = default;
+
   virtual bool isDelta() const = 0;
 
   virtual float pdf(const Vector3f&wo, const Vector3f& wi) const = 0;

@@ -15,7 +15,7 @@ public:
       , lights(std::move(lights))
   { }
 
-  ~Scene() {
+  ~Scene() noexcept {
     for (auto light : lights)
       delete light;
   }

@@ -43,7 +43,7 @@ struct Bucket {
   Bounds3f bounds;
 };
 
-BVHAccel::BVHAccel(std::vector<Primitive*>&& prims) noexcept : primitives(std::move(prims)) {
+BVHAccel::BVHAccel(std::vector<Triangle*>&& prims) noexcept : primitives(std::move(prims)) {
   auto size = primitives.size();
   std::vector<PrimInfo> primInfos;
   primInfos.reserve(size);
@@ -51,7 +51,7 @@ BVHAccel::BVHAccel(std::vector<Primitive*>&& prims) noexcept : primitives(std::m
     primInfos.emplace_back(i, primitives[i]->getBounds());
 
   int totalNodes = 0;
-  std::vector<Primitive*> orderedPrims;
+  std::vector<Triangle*> orderedPrims;
   orderedPrims.reserve(size);
   auto root = sahBuild(primInfos, 0, size, totalNodes, orderedPrims);
   primitives = std::move(orderedPrims);
@@ -64,7 +64,7 @@ BVHAccel::BVHAccel(std::vector<Primitive*>&& prims) noexcept : primitives(std::m
 BVHNode* BVHAccel::createLeafNode(
     std::vector<PrimInfo>& primInfos,
     int start, int end, int& totalNodes,
-    std::vector<Primitive*>& orderedPrims) const {
+    std::vector<Triangle*>& orderedPrims) const {
   ++totalNodes;
   Bounds3f bounds;
   auto firstPrimOffset = (int)orderedPrims.size();
@@ -78,7 +78,7 @@ BVHNode* BVHAccel::createLeafNode(
 BVHNode* BVHAccel::exhaustBuild(
   std::vector<PrimInfo>& primInfos,
   int start, int end, int& totalNodes,
-  std::vector<Primitive*>& orderedPrims) const {
+  std::vector<Triangle*>& orderedPrims) const {
 
   auto nPrims = end - start;
   if (nPrims == 1)
@@ -140,7 +140,7 @@ BVHNode* BVHAccel::exhaustBuild(
 BVHNode* BVHAccel::sahBuild(
   std::vector<PrimInfo>& primInfos,
   int start, int end, int& totalNodes,
-  std::vector<Primitive*>& orderedPrims) const {
+  std::vector<Triangle*>& orderedPrims) const {
 
   auto nPrims = end - start;
   if (nPrims == 1)
@@ -245,9 +245,13 @@ bool BVHAccel::intersect(const Ray& ray, Interaction& isect) const {
     auto& node = nodes[currentIndex];
     if (node.bounds.intersect(ray, invDir, dirIsNeg)) {
       if (node.nPrims) {
-        for (auto i = 0; i < node.nPrims; ++i)
-          if (primitives[node.primsOffset + i]->intersect(ray, isect))
+        for (auto i = 0; i < node.nPrims; ++i) {
+          auto primitive = primitives[node.primsOffset + i];
+          if (primitive ->intersect(ray, isect)) {
             hit = true;
+            isect.triangle = primitive;
+          }
+        }
       } else {
         if (dirIsNeg[node.splitAxis]) {
           nodesToVisit[++toVisitOffset] = currentIndex + 1;

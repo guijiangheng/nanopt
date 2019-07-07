@@ -33,6 +33,7 @@ set(
   include/nanopt/core/integrator.h
   include/nanopt/core/interaction.h
   include/nanopt/core/mesh.h
+  include/nanopt/core/material.h
   include/nanopt/core/ray.h
   include/nanopt/core/sampler.h
   include/nanopt/core/parallel.h
@@ -45,6 +46,7 @@ set(
   include/nanopt/integrators/normal.h
   include/nanopt/integrators/path.h
   include/nanopt/lights/point.h
+  include/nanopt/materials/matte.h
   include/nanopt/math/math.h
   include/nanopt/math/bounds2.h
   include/nanopt/math/bounds3.h
@@ -60,6 +62,7 @@ set(
   src/accelerators/bvh.cpp
   src/core/distribution1d.cpp
   src/core/integrator.cpp
+  src/core/interaction.cpp
   src/core/triangle.cpp
   src/core/parallel.cpp
   src/core/visibilitytester.cpp
