@@ -110,6 +110,7 @@ target_link_libraries(nanopt PRIVATE imageio)
 
 add_executable(ao src/main/ao.cpp)
 add_executable(ajax src/main/ajax.cpp)
+add_executable(cbox src/main/cbox.cpp)
 add_executable(point src/main/point.cpp)
 add_executable(bunny src/main/bunny.cpp)
 add_executable(dragon src/main/dragon.cpp)
@@ -120,6 +121,7 @@ set(
   NANOPT_EXES
   ao
   ajax
+  cbox
   bunny
   point
   dragon

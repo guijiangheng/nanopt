@@ -1,6 +1,7 @@
 #pragma once
 
 #include <nanopt/core/ray.h>
+#include <nanopt/core/spectrum.h>
 
 namespace nanopt {
 
@@ -27,6 +28,8 @@ public:
     auto o = offsetRayOrigin(w);
     return Ray(o, w, 1.0f - ShadowEpsilon);
   }
+
+  Spectrum le(const Vector3f& w) const;
 
   void computeScatteringFunctions();
 

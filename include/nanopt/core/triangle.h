@@ -8,12 +8,16 @@
 
 namespace nanopt {
 
+class DiffuseAreaLight;
+
 class Triangle : public  Primitive {
 public:
-  Triangle(const Mesh& mesh, int triangleIndex, Material* material = nullptr)
-    : mesh(mesh)
-    , material(material)
-    , indices(mesh.indices.get() + triangleIndex * 3)
+  Triangle(
+    const Mesh& mesh, int triangleIndex, Material* material = nullptr)
+      : mesh(mesh)
+      , indices(mesh.indices.get() + triangleIndex * 3)
+      , material(material)
+      , light(nullptr)
   { }
 
   Vector2f getUv(const Vector2f& st) const {
@@ -86,8 +90,9 @@ public:
 
 public:
   const Mesh& mesh;
-  Material* material;
   const int* indices;
+  Material* material;
+  DiffuseAreaLight* light;
 };
 
 inline std::vector<Triangle*> createTriangleMesh(const Mesh& mesh, Material* material = nullptr) {

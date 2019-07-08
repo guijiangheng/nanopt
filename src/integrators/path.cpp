@@ -9,8 +9,10 @@ Spectrum PathIntegrator::li(const Ray& ray, const Scene& scene) const {
   Interaction isect;
   if (scene.intersect(ray, isect)) {
     isect.computeScatteringFunctions();
+    auto l = isect.le(-ray.d);
     if (isect.bsdf)
-      return sampleOneLight(isect, scene);
+      l += sampleOneLight(isect, scene);
+    return l;
   }
   return Spectrum(0);
 }

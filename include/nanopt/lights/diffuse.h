@@ -11,8 +11,14 @@ public:
   DiffuseAreaLight(Triangle* shape, const Spectrum& intensity, bool twoSided = false) noexcept
     : shape(shape)
     , intensity(intensity)
-    , twoSided(twoSided)
-  { }
+    , twoSided(twoSided) {
+
+    shape->light = this;
+  }
+
+  bool isDelta() const override {
+    return false;
+  }
 
   Spectrum le(const Interaction& pLight, const Vector3f& wo) const {
     if (twoSided || dot(pLight.n, wo) > 0)
