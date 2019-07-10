@@ -3,8 +3,8 @@
 namespace nanopt {
 
 bool Triangle::intersect(const Ray& ray) const {
-  auto& b = mesh.p[indices[1]];
   auto& a = mesh.p[indices[0]];
+  auto& b = mesh.p[indices[1]];
   auto& c = mesh.p[indices[2]];
 
   auto e1 = b - a;
@@ -30,8 +30,8 @@ bool Triangle::intersect(const Ray& ray) const {
 
 // ref https://cadxfem.org/inf/Fast%20MinimumStorage%20RayTriangle%20Intersection.pdf
 bool Triangle::intersect(const Ray& ray, Interaction& isect) const {
-  auto& b = mesh.p[indices[1]];
   auto& a = mesh.p[indices[0]];
+  auto& b = mesh.p[indices[1]];
   auto& c = mesh.p[indices[2]];
 
   auto e1 = b - a;
@@ -52,14 +52,33 @@ bool Triangle::intersect(const Ray& ray, Interaction& isect) const {
   auto dist = dot(q, e2) * detInv;
   if (dist <= 0 || dist > ray.tMax) return false;
 
-  auto st = Vector2f(u, v);
   ray.tMax = dist;
-  isect.p = a + e1 * u + e2 * v;
-  isect.wo = -ray.d;
-  isect.n = getNormal(st);
-  isect.uv = getUv(st);
+  isect.uv = Vector2f(u, v);
 
   return true;
+}
+
+void Triangle::computeIntersection(Interaction& isect) const {
+  auto& a = mesh.p[indices[0]];
+  auto& b = mesh.p[indices[1]];
+  auto& c = mesh.p[indices[2]];
+  isect.p = barycentric(a, b, c, isect.uv);
+
+  if (!mesh.n || mesh.shadingMode == ShadingMode::Flat) {
+    isect.n = normalize(cross(c - a, b - a));
+  } else {
+    auto& a = mesh.n[indices[0]];
+    auto& b = mesh.n[indices[1]];
+    auto& c = mesh.n[indices[2]];
+    isect.n = normalize(barycentric(a, b, c, isect.uv));
+  }
+
+  if (mesh.uv) {
+    auto& a = mesh.uv[indices[0]];
+    auto& b = mesh.uv[indices[1]];
+    auto& c = mesh.uv[indices[2]];
+    isect.uv = barycentric(a, b, c, isect.uv);
+  }
 }
 
 }

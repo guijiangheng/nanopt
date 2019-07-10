@@ -137,6 +137,17 @@ Vector2<T> lerp(const Vector2<T>& a, const Vector2<T>& b, T t) {
   return a + (b - a) * t;
 }
 
+
+template <typename T>
+Vector2<T> barycentric(
+  const Vector2<T>& a,
+  const Vector2<T>& b,
+  const Vector2<T>& c,
+  const Vector2<T>& uv) {
+
+  return a * (1 - uv.x - uv.y) + b * uv.x + c * uv.y;
+}
+
 template <typename T>
 Vector2<T> normalize(const Vector2<T>& v) {
   return v / v.length();

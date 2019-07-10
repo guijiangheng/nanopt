@@ -158,6 +158,16 @@ Vector3<T> lerp(const Vector3<T>& a, const Vector3<T>& b, T t) {
 }
 
 template <typename T>
+Vector3<T> barycentric(
+  const Vector3<T>& a,
+  const Vector3<T>& b,
+  const Vector3<T>& c,
+  const Vector2<T>& uv) {
+
+  return a * (1 - uv.x - uv.y) + b * uv.x + c * uv.y;
+}
+
+template <typename T>
 Vector3<T> faceForward(const Vector3<T>& n, const Vector3<T>& v) {
   return dot(n, v) > 0 ? n : -n;
 }

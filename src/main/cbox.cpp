@@ -33,7 +33,7 @@ int main() {
   auto lightMesh = loadMeshOBJ("../scenes/cbox/light.obj");
   auto lightTriangles = createTriangleMesh(lightMesh);
   for (auto triangle : lightTriangles)
-    lights.push_back(new DiffuseAreaLight(triangle, Spectrum(40), true));
+    lights.push_back(new DiffuseAreaLight(triangle, Spectrum(20)));
   triangles.insert(triangles.begin(), lightTriangles.begin(), lightTriangles.end());
 
 
@@ -54,7 +54,9 @@ int main() {
   Scene scene(accel, std::move(lights));
   RandomSampler sampler(512);
   PathIntegrator integrator(camera, sampler, 1);
+  parallelInit();
   integrator.render(scene);
+  parallelCleanup();
   film.writeImage("./cbox.png");
 
   return 0;

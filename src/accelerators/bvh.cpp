@@ -264,6 +264,11 @@ bool BVHAccel::intersect(const Ray& ray, Interaction& isect) const {
     }
   }
 
+  if (hit) {
+    isect.triangle->computeIntersection(isect);
+    isect.wo = -ray.d;
+  }
+
   return hit;
 }
 
