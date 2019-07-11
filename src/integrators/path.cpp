@@ -8,15 +8,43 @@
 namespace nanopt {
 
 Spectrum PathIntegrator::li(const Ray& ray, const Scene& scene) const {
-  Interaction isect;
-  if (scene.intersect(ray, isect)) {
+  Ray r(ray);
+  auto specularBounce = false;
+  Spectrum l(0), beta(1);
+
+  for (auto bounce = 0; bounce < maxDepth; ++bounce) {
+    Interaction isect;
+    auto foundIntersection = scene.intersect(r, isect);
+
+    if (bounce == 0 || specularBounce) {
+      if (foundIntersection)
+        l += beta * isect.le(-r.d);
+      else if (scene.infiniteLight)
+        l += beta * scene.infiniteLight->le(r);
+    }
+
+    if (!foundIntersection) break;
     isect.computeScatteringFunctions();
-    auto l = isect.le(-ray.d);
-    if (isect.bsdf)
-      l += sampleOneLight(isect, scene);
-    return l;
+    if (!isect.bsdf) break;
+    l += beta * sampleOneLight(isect, scene);
+
+    auto wo = -r.d;
+    Vector3f wiLocal;
+    Frame frame(faceForward(isect.n, wo));
+    auto f = isect.bsdf->sample(sampler.get2D(), frame.toLocal(wo), wiLocal);
+    if (f.isBlack()) break;
+    if (isect.bsdf->isDelta()) specularBounce = true;
+    beta *= f;
+
+    if (beta.maxComponent() < 0.5f && bounce > 3) {
+      auto q = std::max(0.05f, 1 - beta.maxComponent());
+      if (sampler.get1D() < q) break;
+      beta /= 1 - q;
+      r = isect.spawnRay(frame.toWorld(wiLocal));
+    }
   }
-  return Spectrum(0);
+
+  return l;
 }
 
 Spectrum PathIntegrator::estimateDirect(

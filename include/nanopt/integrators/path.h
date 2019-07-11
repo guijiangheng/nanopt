@@ -6,7 +6,7 @@ namespace nanopt {
 
 class PathIntegrator : public Integrator {
 public:
-  PathIntegrator(const Camera& camera, Sampler& sampler, int maxDepth)
+  PathIntegrator(const Camera& camera, Sampler& sampler, int maxDepth = 5)
     : Integrator(camera, sampler)
     , maxDepth(maxDepth)
   { }

@@ -3,6 +3,7 @@
 #include <vector>
 #include <nanopt/core/light.h>
 #include <nanopt/core/primitive.h>
+#include <nanopt/lights/infinite.h>
 
 namespace nanopt {
 
@@ -13,11 +14,13 @@ public:
     std::vector<Light*>&& lights = {}) noexcept
       : accel(accel)
       , lights(std::move(lights))
+      , infiniteLight(nullptr)
   { }
 
   ~Scene() noexcept {
     for (auto light : lights)
       delete light;
+    if (infiniteLight) delete infiniteLight;
   }
 
   bool intersect(const Ray& ray, Interaction& isect) const {
@@ -31,6 +34,7 @@ public:
 public:
   const Primitive& accel;
   std::vector<Light*> lights;
+  InfiniteAreaLight* infiniteLight;
 };
 
 }
