@@ -17,16 +17,18 @@ public:
   }
 
   float pdf(const Vector3f& wo, const Vector3f& wi) const override {
-    if (Frame::cosTheta(wi) < 0) return 0;
+    if (Frame::cosTheta(wi) <= 0)
+      return 0;
     return Frame::cosTheta(wi) * InvPi;
   }
 
   Spectrum f(const Vector3f& wo, const Vector3f& wi) const override {
-    if (Frame::cosTheta(wi) < 0) return Spectrum(0);
+    if (Frame::cosTheta(wi) <= 0)
+      return Spectrum(0);
     return Spectrum(albedo * InvPi);
   }
 
-  Spectrum sample(const Vector3f& wo, Vector3f& wi, const Vector2f& sample ) const override {
+  Spectrum sample(const Vector2f& sample, const Vector3f& wo, Vector3f& wi) const override {
     wi = consineSampleHemisphere(sample);
     return albedo;
   }

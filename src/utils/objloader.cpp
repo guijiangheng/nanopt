@@ -83,7 +83,7 @@ Mesh loadMeshOBJ(const std::string& filename) {
       Vector3f n;
       line >> n.x >> n.y >> n.z;
       n.z = -n.z;
-      normals.push_back(n);
+      normals.push_back(normalize(n));
     } else if (prefix == "f") {
       Vertex verts[6];
       auto nVerts = 3;

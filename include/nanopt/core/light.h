@@ -2,11 +2,10 @@
 
 #include <nanopt/core/ray.h>
 #include <nanopt/core/spectrum.h>
+#include <nanopt/core/interaction.h>
+#include <nanopt/core/visibilitytester.h>
 
 namespace nanopt {
-
-class Interaction;
-class VisibilityTester;
 
 class Light {
 public:

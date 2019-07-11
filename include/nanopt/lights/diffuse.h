@@ -2,7 +2,6 @@
 
 #include <nanopt/core/light.h>
 #include <nanopt/core/triangle.h>
-#include <nanopt/core/visibilitytester.h>
 
 namespace nanopt {
 

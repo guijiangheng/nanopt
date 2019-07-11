@@ -47,6 +47,7 @@ set(
   include/nanopt/integrators/path.h
   include/nanopt/lights/point.h
   include/nanopt/lights/diffuse.h
+  include/nanopt/lights/infinite.h
   include/nanopt/materials/matte.h
   include/nanopt/math/math.h
   include/nanopt/math/bounds2.h

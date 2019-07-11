@@ -17,13 +17,13 @@ int main() {
   auto leftWallTriangles = createTriangleMesh(leftWallMesh, leftWallMat.get());
   triangles.insert(triangles.begin(), leftWallTriangles.begin(), leftWallTriangles.end());
 
-  auto sphere1Mat = std::make_unique<MatteMaterial>(Spectrum(1));
+  auto sphere1Mat = std::make_unique<MatteMaterial>(Spectrum(0.5f));
   auto sphere1Mesh = loadMeshOBJ("../scenes/cbox/sphere1.obj");
   auto sphere1Triangles = createTriangleMesh(sphere1Mesh, sphere1Mat.get());
   triangles.insert(triangles.begin(), sphere1Triangles.begin(), sphere1Triangles.end());
   sphere1Mesh.shadingMode = ShadingMode::Smooth;
 
-  auto sphere2Mat = std::make_unique<MatteMaterial>(Spectrum(1));
+  auto sphere2Mat = std::make_unique<MatteMaterial>(Spectrum(0.5f));
   auto sphere2Mesh = loadMeshOBJ("../scenes/cbox/sphere2.obj");
   auto sphere2Triangles = createTriangleMesh(sphere2Mesh, sphere2Mat.get());
   triangles.insert(triangles.begin(), sphere2Triangles.begin(), sphere2Triangles.end());
@@ -33,7 +33,7 @@ int main() {
   auto lightMesh = loadMeshOBJ("../scenes/cbox/light.obj");
   auto lightTriangles = createTriangleMesh(lightMesh);
   for (auto triangle : lightTriangles)
-    lights.push_back(new DiffuseAreaLight(triangle, Spectrum(20)));
+    lights.push_back(new DiffuseAreaLight(triangle, Spectrum(40)));
   triangles.insert(triangles.begin(), lightTriangles.begin(), lightTriangles.end());
 
 

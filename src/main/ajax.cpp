@@ -7,7 +7,7 @@ int main() {
   auto triangles = createTriangleMesh(mesh);
   BVHAccel accel(std::move(triangles));
   Scene scene(accel);
-  Film film(Vector2i(512, 512));
+  Film film(Vector2i(768, 768));
 
   PerspectiveCamera camera(
     Matrix4::lookAt(
@@ -20,7 +20,7 @@ int main() {
     30
   );
 
-  RandomSampler sampler(1);
+  RandomSampler sampler(32);
   NormalIntegrator integrator(camera, sampler);
   parallelInit();
   integrator.render(scene);
