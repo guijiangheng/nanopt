@@ -52,12 +52,12 @@ int main() {
 
   BVHAccel accel(std::move(triangles));
   Scene scene(accel, std::move(lights));
-  RandomSampler sampler(32);
-  NormalIntegrator integrator(camera, sampler);
+  RandomSampler sampler(8);
+  PathIntegrator integrator(camera, sampler);
   parallelInit();
   integrator.render(scene);
   parallelCleanup();
-  film.writeImage("./cbox.png");
+  film.writeImage("./cbox.exr");
 
   return 0;
 }

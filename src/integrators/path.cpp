@@ -33,14 +33,14 @@ Spectrum PathIntegrator::li(const Ray& ray, const Scene& scene) const {
     Frame frame(faceForward(isect.n, wo));
     auto f = isect.bsdf->sample(sampler.get2D(), frame.toLocal(wo), wiLocal);
     if (f.isBlack()) break;
-    if (isect.bsdf->isDelta()) specularBounce = true;
+    specularBounce = isect.bsdf->isDelta();
     beta *= f;
+    r = isect.spawnRay(frame.toWorld(wiLocal));
 
-    if (beta.maxComponent() < 0.5f && bounce > 3) {
+    if (bounce > 3) {
       auto q = std::max(0.05f, 1 - beta.maxComponent());
       if (sampler.get1D() < q) break;
       beta /= 1 - q;
-      r = isect.spawnRay(frame.toWorld(wiLocal));
     }
   }
 
@@ -77,8 +77,6 @@ Spectrum PathIntegrator::estimateDirect(
     return ld;
 
   f = isect.bsdf->sample(sampler.get2D(), woLocal, wiLocal);
-  if (f.isBlack()) return ld;
-
   wi = frame.toWorld(wiLocal);
   lightPdf = light.pdf(isect, wi);
   if (lightPdf == 0) return ld;
