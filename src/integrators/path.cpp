@@ -32,7 +32,6 @@ Spectrum PathIntegrator::li(const Ray& ray, const Scene& scene) const {
     Vector3f wiLocal;
     Frame frame(faceForward(isect.n, wo));
     auto f = isect.bsdf->sample(sampler.get2D(), frame.toLocal(wo), wiLocal);
-    if (f.isBlack()) break;
     specularBounce = isect.bsdf->isDelta();
     beta *= f;
     r = isect.spawnRay(frame.toWorld(wiLocal));
@@ -74,7 +73,7 @@ Spectrum PathIntegrator::estimateDirect(
   }
 
   if (light.isDelta() || isect.bsdf->isDelta())
-    return ld;
+    return Spectrum(0);
 
   f = isect.bsdf->sample(sampler.get2D(), woLocal, wiLocal);
   wi = frame.toWorld(wiLocal);

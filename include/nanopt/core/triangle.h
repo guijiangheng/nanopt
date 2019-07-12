@@ -40,7 +40,16 @@ public:
     Interaction isect;
     auto ray = ref.spawnRay(w);
     if (!intersect(ray, isect)) return 0;
-    return (isect.p - ref.p).lengthSquared() / (absdot(isect.n, w) * area());
+    auto n = getNormal(isect.uv);
+    auto p = getPosition(isect.uv);
+    return (p - ref.p).lengthSquared() / (absdot(n, w) * area());
+  }
+
+  Vector3f getPosition(const Vector2f& st) const {
+    auto& a = mesh.p[indices[0]];
+    auto& b = mesh.p[indices[1]];
+    auto& c = mesh.p[indices[2]];
+    return barycentric(a, b, c, st);
   }
 
   Vector3f getNormal(const Vector2f& st) const {
