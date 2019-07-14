@@ -20,8 +20,6 @@ public:
       , light(nullptr)
   { }
 
-  void computeIntersection(Interaction& isect) const;
-
   Bounds3f getBounds() const override {
     auto& a = mesh.p[indices[0]];
     auto& b = mesh.p[indices[1]];
@@ -40,31 +38,12 @@ public:
     Interaction isect;
     auto ray = ref.spawnRay(w);
     if (!intersect(ray, isect)) return 0;
-    auto n = getNormal(isect.uv);
-    auto p = getPosition(isect.uv);
-    return (p - ref.p).lengthSquared() / (absdot(n, w) * area());
-  }
-
-  Vector3f getPosition(const Vector2f& st) const {
     auto& a = mesh.p[indices[0]];
     auto& b = mesh.p[indices[1]];
     auto& c = mesh.p[indices[2]];
-    return barycentric(a, b, c, st);
-  }
-
-  Vector3f getNormal(const Vector2f& st) const {
-    if (!mesh.n || mesh.shadingMode == ShadingMode::Flat) {
-      auto& a = mesh.p[indices[0]];
-      auto& b = mesh.p[indices[1]];
-      auto& c = mesh.p[indices[2]];
-      auto e1 = b - a;
-      auto e2 = c - a;
-      return normalize(cross(e2, e1));
-    }
-    auto& a = mesh.n[indices[0]];
-    auto& b = mesh.n[indices[1]];
-    auto& c = mesh.n[indices[2]];
-    return normalize(a * (1 - st.x - st.y) + b * st.x + c * st.y);
+    auto p = barycentric(a, b, c, isect.uv);
+    auto n = normalize(cross(c - a, b - a));
+    return (p - ref.p).lengthSquared() / (absdot(n, w) * area());
   }
 
   Interaction sample(const Vector2f& u, float& pdf) const {
@@ -73,8 +52,8 @@ public:
     auto& b = mesh.p[indices[1]];
     auto& c = mesh.p[indices[2]];
     Interaction isect;
-    isect.p = a * uv[0] + b * uv[1] + c * (1 - uv[0] - uv[1]);
-    isect.n = getNormal(uv);
+    isect.p = barycentric(a, b, c, uv);
+    isect.n = normalize(cross(c - a, b - a));
     pdf = 1 / area();
     return isect;
   }
@@ -86,6 +65,8 @@ public:
     pdf *= d.lengthSquared() / absdot(pLight.n, w);
     return pLight;
   }
+
+  void computeIntersection(Interaction& isect) const;
 
   bool intersect(const Ray& ray) const override;
 

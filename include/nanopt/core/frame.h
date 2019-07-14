@@ -22,6 +22,10 @@ public:
     return w.z;
   }
 
+  static float absCosTheta(const Vector3f& w) {
+    return std::abs(w.z);
+  }
+
 public:
   Vector3f n, s, t;
 };

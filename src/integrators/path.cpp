@@ -30,7 +30,7 @@ Spectrum PathIntegrator::li(const Ray& ray, const Scene& scene) const {
 
     auto wo = -r.d;
     Vector3f wiLocal;
-    Frame frame(faceForward(isect.n, wo));
+    auto frame = Frame(isect.ns);
     auto f = isect.bsdf->sample(sampler.get2D(), frame.toLocal(wo), wiLocal);
     specularBounce = isect.bsdf->isDelta();
     beta *= f;
@@ -59,17 +59,16 @@ Spectrum PathIntegrator::estimateDirect(
   if (li.isBlack()) return Spectrum(0);
 
   auto ld = Spectrum(0);
-  auto n = faceForward(isect.n, isect.wo);
-  auto frame = Frame(n);
+  auto frame = Frame(isect.ns);
   auto woLocal = frame.toLocal(isect.wo);
   auto wiLocal = frame.toLocal(wi);
   auto f = isect.bsdf->f(woLocal, wiLocal);
 
   if (!f.isBlack() && tester.unoccluded(scene)) {
     if (light.isDelta())
-      return f * absdot(isect.n, wi) * li / lightPdf;
+      return f * absdot(isect.ns, wi) * li / lightPdf;
     auto scatteringPdf = isect.bsdf->pdf(woLocal, wiLocal);
-    ld += f * absdot(isect.n, wi) * li * powerHeuristic(lightPdf, scatteringPdf) / lightPdf;
+    ld += f * absdot(isect.ns, wi) * li * powerHeuristic(lightPdf, scatteringPdf) / lightPdf;
   }
 
   if (light.isDelta() || isect.bsdf->isDelta())

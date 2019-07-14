@@ -36,6 +36,7 @@ public:
 public:
   Vector3f p;
   Vector3f n;
+  Vector3f ns;
   Vector2f uv;
   Vector3f wo;
   BSDF* bsdf;

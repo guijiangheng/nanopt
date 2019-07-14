@@ -63,14 +63,15 @@ void Triangle::computeIntersection(Interaction& isect) const {
   auto& b = mesh.p[indices[1]];
   auto& c = mesh.p[indices[2]];
   isect.p = barycentric(a, b, c, isect.uv);
+  isect.n = normalize(cross(c - a, b - a));
 
   if (!mesh.n || mesh.shadingMode == ShadingMode::Flat) {
-    isect.n = normalize(cross(c - a, b - a));
+    isect.ns = isect.n;
   } else {
     auto& a = mesh.n[indices[0]];
     auto& b = mesh.n[indices[1]];
     auto& c = mesh.n[indices[2]];
-    isect.n = normalize(barycentric(a, b, c, isect.uv));
+    isect.ns = normalize(barycentric(a, b, c, isect.uv));
   }
 
   if (mesh.uv) {

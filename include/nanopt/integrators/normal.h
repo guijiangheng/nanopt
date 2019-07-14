@@ -13,7 +13,7 @@ public:
   Spectrum li(const Ray& ray, const Scene& scene) const override {
     Interaction isect;
     if (scene.intersect(ray, isect))
-      return Spectrum(abs(isect.n));
+      return Spectrum(abs(isect.ns));
     return Spectrum(0);
   }
 };

@@ -15,7 +15,9 @@ public:
   { }
 
   std::unique_ptr<Sampler> clone(int seed) const override {
-    return std::unique_ptr<Sampler>(new RandomSampler(samplesPerPixel));
+    auto sampler = new RandomSampler(samplesPerPixel);
+    sampler->generator.seed(seed);
+    return std::unique_ptr<Sampler>(sampler);
   }
 
   float get1D() override {
