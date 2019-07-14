@@ -17,7 +17,8 @@ public:
   virtual Spectrum sample(
     const Vector2f& sample,
     const Vector3f& wo,
-    Vector3f& wi) const = 0;
+    Vector3f& wi,
+    float& etaScale) const = 0;
 };
 
 }

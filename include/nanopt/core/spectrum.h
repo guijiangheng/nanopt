@@ -74,6 +74,17 @@ public:
     return *this;
   }
 
+  Spectrum operator/(const Spectrum& rhs) const {
+    return { e[0] / rhs.e[0], e[1] / rhs.e[1], e[2] / rhs.e[2] };
+  }
+
+  Spectrum operator/=(const Spectrum& rhs) {
+    e[0] /= rhs.e[0];
+    e[1] /= rhs.e[1];
+    e[2] /= rhs.e[2];
+    return *this;
+  }
+
   float operator[](int index) const {
     return e[index];
   }
@@ -125,6 +136,10 @@ public:
 public:
   float e[3];
 };
+
+inline Spectrum sqrt(const Spectrum& s) {
+  return Spectrum(std::sqrt(s.e[0]), std::sqrt(s.e[1]), std::sqrt(s.e[2]));
+}
 
 inline Spectrum lerp(const Spectrum& a, const Spectrum& b, float t) {
   return a + (b - a) * t;

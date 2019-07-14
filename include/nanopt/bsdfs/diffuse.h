@@ -27,7 +27,8 @@ public:
     return Spectrum(kd * InvPi);
   }
 
-  Spectrum sample(const Vector2f& sample, const Vector3f& wo, Vector3f& wi) const override {
+  Spectrum sample(const Vector2f& sample, const Vector3f& wo, Vector3f& wi, float& etaScale) const override {
+    etaScale = 1.0f;
     wi = consineSampleHemisphere(sample);
     if (Frame::cosTheta(wo) < 0)
       wi.z = -wi.z;

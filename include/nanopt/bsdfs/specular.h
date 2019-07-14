@@ -1,14 +1,20 @@
 #pragma once
 
+#include <nanopt/core/frame.h>
 #include <nanopt/core/bsdf.h>
-#include <nanopt/core/sampling.h>
+#include <nanopt/core/fresnel.h>
 
 namespace nanopt {
 
-class Mirror : public BSDF {
+class SpecularReflection : public BSDF {
 public:
-  Mirror(const Spectrum& kr) noexcept : kr(kr)
+  SpecularReflection(Fresnel* fresnel, const Spectrum& kr) noexcept
+    : fresnel(fresnel), kr(kr)
   { }
+
+  ~SpecularReflection() {
+    delete fresnel;
+  }
 
   bool isDelta() const override {
     return true;
@@ -25,11 +31,13 @@ public:
   Spectrum sample(const Vector2f& sample, const Vector3f& wo, Vector3f& wi, float& etaScale) const override {
     etaScale = 1.0f;
     wi = Vector3f(-wo.x, -wo.y, wo.z);
-    return kr;
+    return fresnel->evaluate(Frame::cosTheta(wi)) * kr;
   }
 
 public:
+  Fresnel* fresnel;
   Spectrum kr;
 };
+
 
 }

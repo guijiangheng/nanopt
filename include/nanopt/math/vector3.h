@@ -173,6 +173,16 @@ Vector3<T> faceForward(const Vector3<T>& n, const Vector3<T>& v) {
 }
 
 template <typename T>
+Vector3<T> refract(const Vector3<T>& wi, const Vector3<T>& n, float eta) {
+  eta = 1 / eta;
+  auto cosThetaI = wi.z * n.z;
+  auto sin2ThetaI = std::max(0.0f, 1 - cosThetaI * cosThetaI);
+  auto sin2ThetaT = sin2ThetaI * eta * eta;
+  auto cosThetaT = std::sqrt(std::max(0.0f, 1 - sin2ThetaT));
+  return Vector3<T>(-wi.x * eta, -wi.y * eta, -wi.z * eta + (eta * cosThetaI - cosThetaT) * n.z);
+}
+
+template <typename T>
 Vector3<T> normalize(const Vector3<T>& v) {
   return v / v.length();
 }

@@ -23,7 +23,7 @@ int main() {
   triangles.insert(triangles.begin(), sphere1Triangles.begin(), sphere1Triangles.end());
   sphere1Mesh.shadingMode = ShadingMode::Smooth;
 
-  auto sphere2Mat = std::make_unique<MatteMaterial>(Spectrum(0.5f));
+  auto sphere2Mat = std::make_unique<GlassMaterial>(Spectrum(1), Spectrum(1), 1.4f);
   auto sphere2Mesh = loadMeshOBJ("../scenes/cbox/sphere2.obj");
   auto sphere2Triangles = createTriangleMesh(sphere2Mesh, sphere2Mat.get());
   triangles.insert(triangles.begin(), sphere2Triangles.begin(), sphere2Triangles.end());
@@ -52,12 +52,12 @@ int main() {
 
   BVHAccel accel(std::move(triangles));
   Scene scene(accel, std::move(lights));
-  RandomSampler sampler(8);
+  RandomSampler sampler(512);
   PathIntegrator integrator(camera, sampler, 10);
   parallelInit();
   integrator.render(scene);
   parallelCleanup();
-  film.writeImage("./cbox.png");
+  film.writeImage("./glass.png");
 
   return 0;
 }

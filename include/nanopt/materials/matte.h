@@ -1,6 +1,5 @@
 #pragma once
 
-#include <nanopt/core/spectrum.h>
 #include <nanopt/core/material.h>
 #include <nanopt/bsdfs/diffuse.h>
 

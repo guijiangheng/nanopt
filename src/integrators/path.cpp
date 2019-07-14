@@ -10,8 +10,9 @@ namespace nanopt {
 
 Spectrum PathIntegrator::li(const Ray& ray, const Scene& scene) const {
   Ray r(ray);
+  auto etaScaleFix = 1.0f;
   auto specularBounce = false;
-  Spectrum l(0), beta(1);
+  Spectrum l(0), beta(1), rrBeta(1);
 
   for (auto bounce = 0; bounce < maxDepth; ++bounce) {
     Interaction isect;
@@ -29,16 +30,19 @@ Spectrum PathIntegrator::li(const Ray& ray, const Scene& scene) const {
     if (!isect.bsdf) break;
     l += beta * sampleOneLight(isect, scene);
 
-    auto wo = -r.d;
+    float etaScale;
     Vector3f wiLocal;
     auto frame = Frame(isect.ns);
-    auto f = isect.bsdf->sample(sampler.get2D(), frame.toLocal(wo), wiLocal);
-    specularBounce = isect.bsdf->isDelta();
+    auto f = isect.bsdf->sample(sampler.get2D(), frame.toLocal(-r.d), wiLocal, etaScale);
+
     beta *= f;
+    etaScaleFix *= etaScale;
+    rrBeta = beta * etaScaleFix;
+    specularBounce = isect.bsdf->isDelta();
     r = isect.spawnRay(frame.toWorld(wiLocal));
 
-    if (bounce > 3) {
-      auto q = std::max(0.05f, 1 - beta.maxComponent());
+    if (rrBeta.maxComponent() < 1.0f && bounce > 3) {
+      auto q = std::max(0.05f, 1 - rrBeta.maxComponent());
       if (sampler.get1D() < q) break;
       beta /= 1 - q;
     }
@@ -75,7 +79,8 @@ Spectrum PathIntegrator::estimateDirect(
   if (light.isDelta() || isect.bsdf->isDelta())
     return Spectrum(0);
 
-  f = isect.bsdf->sample(sampler.get2D(), woLocal, wiLocal);
+  float etaScale;
+  f = isect.bsdf->sample(sampler.get2D(), woLocal, wiLocal, etaScale);
   wi = frame.toWorld(wiLocal);
   lightPdf = light.pdf(isect, wi);
   if (lightPdf == 0) return ld;

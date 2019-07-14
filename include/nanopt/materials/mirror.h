@@ -1,6 +1,5 @@
 #pragma once
 
-#include <nanopt/core/spectrum.h>
 #include <nanopt/core/material.h>
 #include <nanopt/bsdfs/mirror.h>
 
@@ -12,7 +11,8 @@ public:
   { }
 
   void computeScatteringFunctions(Interaction& isect) const override {
-    isect.bsdf = new Mirror(kr);
+    if (!kr.isBlack())
+      isect.bsdf = new Mirror(kr);
   }
 
 public:

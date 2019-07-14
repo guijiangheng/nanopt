@@ -22,15 +22,21 @@ endif()
 set(
   NANOPT_HEADERS
   include/nanopt/nanopt.h
+
   include/nanopt/accelerators/bvh.h
+
   include/nanopt/bsdfs/diffuse.h
   include/nanopt/bsdfs/mirror.h
+  include/nanopt/bsdfs/specular.h
+  include/nanopt/bsdfs/fresnelspecular.h
+
   include/nanopt/core/bsdf.h
   include/nanopt/core/camera.h
   include/nanopt/core/distribution1d.h
   include/nanopt/core/distribution2d.h
   include/nanopt/core/film.h
   include/nanopt/core/frame.h
+  include/nanopt/core/fresnel.h
   include/nanopt/core/integrator.h
   include/nanopt/core/interaction.h
   include/nanopt/core/mesh.h
@@ -42,21 +48,29 @@ set(
   include/nanopt/core/scene.h
   include/nanopt/core/spectrum.h
   include/nanopt/core/triangle.h
+
   include/nanopt/cameras/perspective.h
+
   include/nanopt/integrators/ao.h
   include/nanopt/integrators/normal.h
   include/nanopt/integrators/path.h
+
   include/nanopt/lights/point.h
   include/nanopt/lights/diffuse.h
   include/nanopt/lights/infinite.h
+
   include/nanopt/materials/matte.h
   include/nanopt/materials/mirror.h
+  include/nanopt/materials/glass.h
+
   include/nanopt/math/math.h
   include/nanopt/math/bounds2.h
   include/nanopt/math/bounds3.h
   include/nanopt/math/vector2.h
   include/nanopt/math/vector3.h
+
   include/nanopt/samplers/random.h
+
   include/nanopt/utils/objloader.h
   include/nanopt/utils/plyloader.h
 )
@@ -64,14 +78,19 @@ set(
 set(
   NANOPT_SRCS
   src/accelerators/bvh.cpp
+
   src/core/distribution1d.cpp
+  src/core/fresnel.cpp
   src/core/integrator.cpp
   src/core/interaction.cpp
   src/core/triangle.cpp
   src/core/parallel.cpp
   src/core/visibilitytester.cpp
+
   src/integrators/path.cpp
+
   src/math/matrix4.cpp
+
   src/utils/objloader.cpp
   src/utils/plyloader.cpp
 )
