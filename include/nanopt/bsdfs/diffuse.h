@@ -2,14 +2,13 @@
 
 #include <nanopt/math/math.h>
 #include <nanopt/core/bsdf.h>
-#include <nanopt/core/frame.h>
 #include <nanopt/core/sampling.h>
 
 namespace nanopt {
 
 class Diffuse : public BSDF {
 public:
-  Diffuse(const Spectrum& albedo) : albedo(albedo)
+  Diffuse(const Spectrum& kd) noexcept : kd(kd)
   { }
 
   bool isDelta() const override {
@@ -25,18 +24,18 @@ public:
   Spectrum f(const Vector3f& wo, const Vector3f& wi) const override {
     if (Frame::cosTheta(wo) * Frame::cosTheta(wi) <= 0)
       return Spectrum(0);
-    return Spectrum(albedo * InvPi);
+    return Spectrum(kd * InvPi);
   }
 
   Spectrum sample(const Vector2f& sample, const Vector3f& wo, Vector3f& wi) const override {
     wi = consineSampleHemisphere(sample);
     if (Frame::cosTheta(wo) < 0)
       wi.z = -wi.z;
-    return albedo;
+    return kd;
   }
 
 public:
-  Spectrum albedo;
+  Spectrum kd;
 };
 
 }

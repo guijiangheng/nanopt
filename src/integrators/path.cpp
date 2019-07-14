@@ -1,4 +1,5 @@
 #include <memory>
+#include <nanopt/core/frame.h>
 #include <nanopt/core/triangle.h>
 #include <nanopt/core/visibilitytester.h>
 #include <nanopt/bsdfs/diffuse.h>

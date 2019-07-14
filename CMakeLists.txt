@@ -24,6 +24,7 @@ set(
   include/nanopt/nanopt.h
   include/nanopt/accelerators/bvh.h
   include/nanopt/bsdfs/diffuse.h
+  include/nanopt/bsdfs/mirror.h
   include/nanopt/core/bsdf.h
   include/nanopt/core/camera.h
   include/nanopt/core/distribution1d.h
@@ -49,6 +50,7 @@ set(
   include/nanopt/lights/diffuse.h
   include/nanopt/lights/infinite.h
   include/nanopt/materials/matte.h
+  include/nanopt/materials/mirror.h
   include/nanopt/math/math.h
   include/nanopt/math/bounds2.h
   include/nanopt/math/bounds3.h

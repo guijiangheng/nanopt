@@ -17,7 +17,7 @@ public:
     }
   }
 
-private:
+public:
   Spectrum kd;
 };
 

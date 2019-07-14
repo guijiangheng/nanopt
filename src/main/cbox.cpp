@@ -17,7 +17,7 @@ int main() {
   auto leftWallTriangles = createTriangleMesh(leftWallMesh, leftWallMat.get());
   triangles.insert(triangles.begin(), leftWallTriangles.begin(), leftWallTriangles.end());
 
-  auto sphere1Mat = std::make_unique<MatteMaterial>(Spectrum(0.5f));
+  auto sphere1Mat = std::make_unique<MirrorMaterial>(Spectrum(1.0f));
   auto sphere1Mesh = loadMeshOBJ("../scenes/cbox/sphere1.obj");
   auto sphere1Triangles = createTriangleMesh(sphere1Mesh, sphere1Mat.get());
   triangles.insert(triangles.begin(), sphere1Triangles.begin(), sphere1Triangles.end());
@@ -52,8 +52,8 @@ int main() {
 
   BVHAccel accel(std::move(triangles));
   Scene scene(accel, std::move(lights));
-  RandomSampler sampler(512);
-  PathIntegrator integrator(camera, sampler);
+  RandomSampler sampler(8);
+  PathIntegrator integrator(camera, sampler, 10);
   parallelInit();
   integrator.render(scene);
   parallelCleanup();
