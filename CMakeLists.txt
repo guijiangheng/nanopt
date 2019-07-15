@@ -138,6 +138,7 @@ add_executable(bunny src/main/bunny.cpp)
 add_executable(dragon src/main/dragon.cpp)
 add_executable(imageio-test src/tests/imageio-test.cpp)
 add_executable(fireplace-room src/main/fireplace-room.cpp)
+add_executable(table src/main/table.cpp)
 
 set(
   NANOPT_EXES
@@ -149,6 +150,7 @@ set(
   dragon
   imageio-test
   fireplace-room
+  table
 )
 
 foreach(target ${NANOPT_EXES})

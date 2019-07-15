@@ -37,6 +37,12 @@ public:
       p[i] = frame.applyP(m.p[i]);
     }
 
+    if (m.n) {
+      n.reset(new Vector3f[nVertices]);
+      for (auto i = 0; i < nVertices; ++i)
+        n[i] = normalize(frame.applyN(m.n[i]));
+    }
+
     if (m.uv) {
       uv.reset(new Vector2f[nVertices]);
       memcpy(uv.get(), m.uv.get(), sizeof(Vector2f) * nVertices);
