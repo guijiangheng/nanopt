@@ -18,16 +18,20 @@ public:
     return s * p.x + t * p.y + n * p.z;
   }
 
-  static float cosTheta(const Vector3f& w) {
-    return w.z;
-  }
-
-  static float absCosTheta(const Vector3f& w) {
-    return std::abs(w.z);
-  }
-
 public:
   Vector3f n, s, t;
 };
+
+inline float cosTheta(const Vector3f& w) {
+  return w.z;
+}
+
+inline float absCosTheta(const Vector3f& w) {
+  return std::abs(w.z);
+}
+
+inline bool sameHemisphere(const Vector3f& wo, const Vector3f& wi) {
+  return wo.z * wi.z > 0;
+}
 
 }

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <nanopt/core/frame.h>
 #include <nanopt/core/bxdf.h>
 #include <nanopt/core/fresnel.h>
 
@@ -24,22 +23,28 @@ public:
     return Spectrum(0);
   }
 
-  Spectrum sample(const Vector2f& sample, const Vector3f& wo, Vector3f& wi, float& etaScale) const override {
-    auto k = frDielectric(Frame::cosTheta(wo), eta);
-    if (sample.x < k) {
+  Spectrum sample(
+    const Vector2f& sample,
+    const Vector3f& wo,
+    Vector3f& wi,
+    float& pdf,
+    float& etaScale) const override {
+
+    auto f = frDielectric(cosTheta(wo), eta);
+
+    if (sample.x < f) {
+      pdf = f;
       etaScale = 1.0f;
       wi = Vector3f(-wo.x, -wo.y, wo.z);
-      return kr;
+      return kr * f / absCosTheta(wi);
     } else {
-      auto eta = this->eta;
-      auto n = Vector3f(0, 0, 1);
-      if (Frame::cosTheta(wo) < 0) {
-        n.z = -1;
-        eta = 1 / eta;
-      }
-      wi = refract(wo, n, eta);
+      auto entering = cosTheta(wo) > 0;
+      auto eta = entering ? this->eta : 1 / this->eta;
+      auto n = entering ? Vector3f(0, 0, 1) : Vector3f(0, 0, -1);
+      pdf = 1 - f;
       etaScale = eta * eta;
-      return kt / etaScale;
+      wi = refract(wo, n, eta);
+      return kt * (1 - f) / etaScale / absCosTheta(wi);
     }
   }
 

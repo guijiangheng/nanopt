@@ -30,11 +30,14 @@ Spectrum PathIntegrator::li(const Ray& ray, const Scene& scene) const {
     l += beta * sampleOneLight(isect, scene);
 
     float etaScale;
+    float scatteringPdf;
     Vector3f wiLocal;
     auto frame = Frame(isect.ns);
-    auto f = isect.bsdf->sample(sampler.get2D(), frame.toLocal(-r.d), wiLocal, etaScale);
+    auto f = isect.bsdf->sample(sampler.get2D(), frame.toLocal(-r.d), wiLocal, scatteringPdf, etaScale);
 
-    beta *= f;
+    if (f.isBlack()) break;
+
+    beta *= f * absCosTheta(wiLocal) / scatteringPdf;
     etaScaleFix *= etaScale;
     rrBeta = beta * etaScaleFix;
     specularBounce = isect.bsdf->isDelta();
@@ -63,42 +66,46 @@ Spectrum PathIntegrator::estimateDirect(
   if (li.isBlack()) return Spectrum(0);
 
   auto ld = Spectrum(0);
+
   auto frame = Frame(isect.ns);
   auto woLocal = frame.toLocal(isect.wo);
   auto wiLocal = frame.toLocal(wi);
-  auto f = isect.bsdf->f(woLocal, wiLocal);
+  auto f = isect.bsdf->f(woLocal, wiLocal) * absCosTheta(wiLocal);
 
   if (!f.isBlack() && tester.unoccluded(scene)) {
     if (light.isDelta())
-      return f * absdot(isect.ns, wi) * li / lightPdf;
+      return f * li / lightPdf;
     auto scatteringPdf = isect.bsdf->pdf(woLocal, wiLocal);
-    ld += f * absdot(isect.ns, wi) * li * powerHeuristic(lightPdf, scatteringPdf) / lightPdf;
+    ld += f * li * powerHeuristic(lightPdf, scatteringPdf) / lightPdf;
   }
 
-  if (light.isDelta() || isect.bsdf->isDelta())
-    return Spectrum(0);
+  if (!light.isDelta() && !isect.bsdf->isDelta()) {
+    float etaScale;
+    float scatteringPdf;
+    f = isect.bsdf->sample(sampler.get2D(), woLocal, wiLocal, scatteringPdf, etaScale);
+    f *= absCosTheta(wiLocal);
 
-  float etaScale;
-  f = isect.bsdf->sample(sampler.get2D(), woLocal, wiLocal, etaScale);
-  wi = frame.toWorld(wiLocal);
-  lightPdf = light.pdf(isect, wi);
-  if (lightPdf == 0) return ld;
+    if (!f.isBlack()) {
+      wi = frame.toWorld(wiLocal);
+      lightPdf = light.pdf(isect, wi);
+      if (lightPdf == 0) return ld;
 
-  Interaction lightIsect;
-  auto ray = isect.spawnRay(wi);
-  auto foundIntersection = scene.intersect(ray, lightIsect);
+      Interaction lightIsect;
+      auto ray = isect.spawnRay(wi);
+      auto foundIntersection = scene.intersect(ray, lightIsect);
 
-  li = Spectrum(0);
-  if (foundIntersection) {
-    if ((Light*)lightIsect.triangle->light == &light)
-      li = lightIsect.le(-wi);
-  } else {
-    li = ((InfiniteAreaLight*)&light)->le(ray);
-  }
+      li = Spectrum(0);
+      if (foundIntersection) {
+        if ((Light*)lightIsect.triangle->light == &light)
+          li = lightIsect.le(-wi);
+      } else {
+        li = ((InfiniteAreaLight*)&light)->le(ray);
+      }
 
-  if (!li.isBlack()) {
-    auto scatteringPdf = isect.bsdf->pdf(woLocal, wiLocal);
-    ld += f * li * powerHeuristic(scatteringPdf, lightPdf);
+      if (!li.isBlack()) {
+        ld += f * li * powerHeuristic(scatteringPdf, lightPdf) / scatteringPdf;
+      }
+    }
   }
 
   return ld;

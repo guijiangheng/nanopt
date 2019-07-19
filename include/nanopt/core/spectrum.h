@@ -50,17 +50,6 @@ public:
     return *this;
   }
 
-  Spectrum operator*(const Spectrum& rhs) const {
-    return { e[0] * rhs[0], e[1] * rhs[1], e[2] * rhs[2] };
-  }
-
-  Spectrum& operator*=(const Spectrum& rhs) {
-    e[0] *= rhs[0];
-    e[1] *= rhs[1];
-    e[2] *= rhs[2];
-    return *this;
-  }
-
   Spectrum operator/(float k) const {
     k = 1 / k;
     return { e[0] * k, e[1] * k, e[2] * k };
@@ -71,6 +60,17 @@ public:
     e[0] *= k;
     e[1] *= k;
     e[2] *= k;
+    return *this;
+  }
+
+  Spectrum operator*(const Spectrum& rhs) const {
+    return { e[0] * rhs[0], e[1] * rhs[1], e[2] * rhs[2] };
+  }
+
+  Spectrum& operator*=(const Spectrum& rhs) {
+    e[0] *= rhs[0];
+    e[1] *= rhs[1];
+    e[2] *= rhs[2];
     return *this;
   }
 

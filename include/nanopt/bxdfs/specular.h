@@ -1,6 +1,5 @@
 #pragma once
 
-#include <nanopt/core/frame.h>
 #include <nanopt/core/bxdf.h>
 #include <nanopt/core/fresnel.h>
 
@@ -28,10 +27,18 @@ public:
     return Spectrum(0);
   }
 
-  Spectrum sample(const Vector2f& sample, const Vector3f& wo, Vector3f& wi, float& etaScale) const override {
+  Spectrum sample(
+    const Vector2f& sample,
+    const Vector3f& wo,
+    Vector3f& wi,
+    float& pdf,
+    float& etaScale) const override {
+
+    pdf = 1.0f;
     etaScale = 1.0f;
     wi = Vector3f(-wo.x, -wo.y, wo.z);
-    return fresnel->evaluate(Frame::cosTheta(wi)) * kr;
+
+    return fresnel->evaluate(Frame::cosTheta(wi)) * kr / absCosTheta(wi);
   }
 
 public:
