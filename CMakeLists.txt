@@ -106,10 +106,11 @@ target_include_directories(
   "${CMAKE_CURRENT_SOURCE_DIR}/include"
   ${LODEPNG_INCLUDE_DIR}
   ${OPENEXR_INCLUDE_DIRS}
+  ${GHC_FILESYSTEM_INCLUDE_DIR}
 )
 
 target_compile_features(imageio PRIVATE cxx_std_14)
-target_link_libraries(imageio PRIVATE ${OPENEXR_LIBS} lodepng)
+target_link_libraries(imageio PRIVATE ${OPENEXR_LIBS} lodepng ghc_filesystem)
 
 if(CMAKE_COMPILER_IS_GNUCXX)
   target_link_libraries(imageio PRIVATE stdc++fs)
