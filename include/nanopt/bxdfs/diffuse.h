@@ -1,12 +1,12 @@
 #pragma once
 
 #include <nanopt/math/math.h>
-#include <nanopt/core/bsdf.h>
+#include <nanopt/core/bxdf.h>
 #include <nanopt/core/sampling.h>
 
 namespace nanopt {
 
-class Diffuse : public BSDF {
+class Diffuse : public BxDF {
 public:
   Diffuse(const Spectrum& kd) noexcept : kd(kd)
   { }

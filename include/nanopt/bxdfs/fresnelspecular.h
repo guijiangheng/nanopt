@@ -1,12 +1,12 @@
 #pragma once
 
 #include <nanopt/core/frame.h>
-#include <nanopt/core/bsdf.h>
+#include <nanopt/core/bxdf.h>
 #include <nanopt/core/fresnel.h>
 
 namespace nanopt {
 
-class FresnelSpecular : public BSDF {
+class FresnelSpecular : public BxDF {
 public:
   FresnelSpecular(const Spectrum& kr, const Spectrum& kt, float eta) noexcept
     : kr(kr), kt(kt), eta(eta)

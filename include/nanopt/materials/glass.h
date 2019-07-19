@@ -1,7 +1,7 @@
 #pragma once
 
 #include <nanopt/core/material.h>
-#include <nanopt/bsdfs/fresnelspecular.h>
+#include <nanopt/bxdfs/fresnelspecular.h>
 
 namespace nanopt {
 

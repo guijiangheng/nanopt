@@ -2,7 +2,6 @@
 #include <nanopt/core/frame.h>
 #include <nanopt/core/triangle.h>
 #include <nanopt/core/visibilitytester.h>
-#include <nanopt/bsdfs/diffuse.h>
 #include <nanopt/integrators/path.h>
 #include <nanopt/lights/infinite.h>
 

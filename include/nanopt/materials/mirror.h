@@ -1,7 +1,7 @@
 #pragma once
 
 #include <nanopt/core/material.h>
-#include <nanopt/bsdfs/mirror.h>
+#include <nanopt/bxdfs/mirror.h>
 
 namespace nanopt {
 

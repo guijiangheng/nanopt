@@ -1,6 +1,6 @@
 #pragma once
 
-#include <nanopt/core/bsdf.h>
+#include <nanopt/core/bxdf.h>
 #include <nanopt/core/interaction.h>
 
 namespace nanopt {

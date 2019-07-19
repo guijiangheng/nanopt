@@ -1,11 +1,11 @@
 #pragma once
 
-#include <nanopt/core/bsdf.h>
+#include <nanopt/core/bxdf.h>
 #include <nanopt/core/sampling.h>
 
 namespace nanopt {
 
-class Mirror : public BSDF {
+class Mirror : public BxDF {
 public:
   Mirror(const Spectrum& kr) noexcept : kr(kr)
   { }

@@ -25,12 +25,12 @@ set(
 
   include/nanopt/accelerators/bvh.h
 
-  include/nanopt/bsdfs/diffuse.h
-  include/nanopt/bsdfs/mirror.h
-  include/nanopt/bsdfs/specular.h
-  include/nanopt/bsdfs/fresnelspecular.h
+  include/nanopt/bxdfs/diffuse.h
+  include/nanopt/bxdfs/mirror.h
+  include/nanopt/bxdfs/specular.h
+  include/nanopt/bxdfs/fresnelspecular.h
 
-  include/nanopt/core/bsdf.h
+  include/nanopt/core/bxdf.h
   include/nanopt/core/camera.h
   include/nanopt/core/distribution1d.h
   include/nanopt/core/distribution2d.h

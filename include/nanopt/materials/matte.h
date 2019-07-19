@@ -1,7 +1,7 @@
 #pragma once
 
 #include <nanopt/core/material.h>
-#include <nanopt/bsdfs/diffuse.h>
+#include <nanopt/bxdfs/diffuse.h>
 
 namespace nanopt {
 

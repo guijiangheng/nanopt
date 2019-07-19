@@ -4,9 +4,9 @@
 
 namespace nanopt {
 
-class BSDF {
+class BxDF {
 public:
-  virtual ~BSDF() = default;
+  virtual ~BxDF() = default;
 
   virtual bool isDelta() const = 0;
 
