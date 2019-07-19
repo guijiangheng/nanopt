@@ -2,13 +2,16 @@
 
 #include <cstring>
 #include <tinyexr.h>
-#include <ghc/filesystem.hpp>
 #include <lodepng/lodepng.h>
 #include <nanopt/utils/imageio.h>
 
 namespace nanopt {
 
-namespace fs = ghc::filesystem;
+static std::string extension(const std::string& filename) {
+  auto pos = filename.find_last_of(".");
+  if (pos == std::string::npos) return "";
+  return filename.substr(pos + 1);
+}
 
 static Spectrum* readImagePNG(const std::string& filename, int& width, int& height) {
   unsigned xres, yres;
@@ -44,12 +47,12 @@ static Spectrum* readImageEXR(const std::string& filename, int& width, int& heig
 
 std::unique_ptr<Spectrum[]>
 readImage(const std::string& filename, int& width, int& height) {
-  auto extension = fs::path(filename).extension();
-  if (extension == ".exr")
+  auto ext = extension(filename);
+  if (ext == ".exr")
     return std::unique_ptr<Spectrum[]>(readImageEXR(filename, width, height));
-  else if (extension == ".png")
+  else if (ext == ".png")
     return std::unique_ptr<Spectrum[]>(readImagePNG(filename, width, height));
-  throw std::runtime_error("Input image file format \"" + extension.string() + "\" not supported!");
+  throw std::runtime_error("Input image file format \"" + ext + "\" not supported!");
 }
 
 static void writeImagePNG(const std::string& filename, int width, int height, Spectrum* data) {
@@ -118,12 +121,12 @@ static void writeImageEXR(const std::string& filename, int width, int height, Sp
 }
 
 void writeImage(const std::string& filename, int width, int height, Spectrum* data) {
-  auto extension = fs::path(filename).extension();
-  if (extension == ".exr")
+  auto ext = extension(filename);
+  if (ext == ".exr")
     return writeImageEXR(filename, width, height, data);
-  else if (extension == ".png")
+  else if (ext == ".png")
     return writeImagePNG(filename, width, height, data);
-  throw std::runtime_error("Output image file format \"" + extension.string() + "\" not supported!");
+  throw std::runtime_error("Output image file format \"" + ext + "\" not supported!");
 }
 
 }
