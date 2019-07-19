@@ -1,9 +1,9 @@
 #include <memory>
-#include <nanopt/core/frame.h>
+#include <nanopt/core/bsdf.h>
 #include <nanopt/core/triangle.h>
 #include <nanopt/core/visibilitytester.h>
-#include <nanopt/integrators/path.h>
 #include <nanopt/lights/infinite.h>
+#include <nanopt/integrators/path.h>
 
 namespace nanopt {
 
@@ -31,17 +31,16 @@ Spectrum PathIntegrator::li(const Ray& ray, const Scene& scene) const {
 
     float etaScale;
     float scatteringPdf;
-    Vector3f wiLocal;
-    auto frame = Frame(isect.ns);
-    auto f = isect.bsdf->sample(sampler.get2D(), frame.toLocal(-r.d), wiLocal, scatteringPdf, etaScale);
+    Vector3f wi, wo = -r.d;
+    auto f = isect.bsdf->sample(sampler.get2D(), wo, wi, scatteringPdf, etaScale);
 
     if (f.isBlack()) break;
 
-    beta *= f * absCosTheta(wiLocal) / scatteringPdf;
+    beta *= f * absdot(isect.ns, wi) / scatteringPdf;
     etaScaleFix *= etaScale;
     rrBeta = beta * etaScaleFix;
     specularBounce = isect.bsdf->isDelta();
-    r = isect.spawnRay(frame.toWorld(wiLocal));
+    r = isect.spawnRay(wi);
 
     if (rrBeta.maxComponent() < 1.0f && bounce > 3) {
       auto q = std::max(0.05f, 1 - rrBeta.maxComponent());
@@ -66,35 +65,30 @@ Spectrum PathIntegrator::estimateDirect(
   if (li.isBlack()) return Spectrum(0);
 
   auto ld = Spectrum(0);
-
-  auto frame = Frame(isect.ns);
-  auto woLocal = frame.toLocal(isect.wo);
-  auto wiLocal = frame.toLocal(wi);
-  auto f = isect.bsdf->f(woLocal, wiLocal) * absCosTheta(wiLocal);
+  auto f = isect.bsdf->f(isect.wo, wi) * absdot(isect.ns, wi);
 
   if (!f.isBlack() && tester.unoccluded(scene)) {
     if (light.isDelta())
       return f * li / lightPdf;
-    auto scatteringPdf = isect.bsdf->pdf(woLocal, wiLocal);
+    auto scatteringPdf = isect.bsdf->pdf(isect.wo, wi);
     ld += f * li * powerHeuristic(lightPdf, scatteringPdf) / lightPdf;
   }
 
   if (!light.isDelta() && !isect.bsdf->isDelta()) {
     float etaScale;
     float scatteringPdf;
-    f = isect.bsdf->sample(sampler.get2D(), woLocal, wiLocal, scatteringPdf, etaScale);
-    f *= absCosTheta(wiLocal);
+    f = isect.bsdf->sample(sampler.get2D(), isect.wo, wi, scatteringPdf, etaScale);
+    f *= absdot(isect.ns, wi);
 
     if (!f.isBlack()) {
-      wi = frame.toWorld(wiLocal);
       lightPdf = light.pdf(isect, wi);
       if (lightPdf == 0) return ld;
 
       Interaction lightIsect;
       auto ray = isect.spawnRay(wi);
       auto foundIntersection = scene.intersect(ray, lightIsect);
+      auto li = Spectrum(0);
 
-      li = Spectrum(0);
       if (foundIntersection) {
         if ((Light*)lightIsect.triangle->light == &light)
           li = lightIsect.le(-wi);

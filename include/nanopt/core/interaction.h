@@ -5,7 +5,7 @@
 
 namespace nanopt {
 
-class BxDF;
+class BSDF;
 class Triangle;
 
 class Interaction {
@@ -39,7 +39,7 @@ public:
   Vector3f ns;
   Vector2f uv;
   Vector3f wo;
-  BxDF* bsdf;
+  BSDF* bsdf;
   Triangle* triangle;
   static constexpr auto ShadowEpsilon = 0.0001f;
   static constexpr auto RayOriginOffsetEpsilon = 0.00001f;

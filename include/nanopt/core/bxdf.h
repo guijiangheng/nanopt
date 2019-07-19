@@ -1,7 +1,9 @@
 #pragma once
 
+#include <nanopt/math/math.h>
 #include <nanopt/core/frame.h>
 #include <nanopt/core/spectrum.h>
+#include <nanopt/core/sampling.h>
 
 namespace nanopt {
 

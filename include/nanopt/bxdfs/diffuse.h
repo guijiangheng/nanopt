@@ -1,8 +1,6 @@
 #pragma once
 
-#include <nanopt/math/math.h>
 #include <nanopt/core/bxdf.h>
-#include <nanopt/core/sampling.h>
 
 namespace nanopt {
 

@@ -3,7 +3,7 @@
 using namespace nanopt;
 
 int main() {
-  auto mesh = loadMeshOBJ("../scenes/fireplace-room/fireplace_room.obj");
+  auto mesh = loadMeshOBJ("../scenes/fireplace-room/fireplace-room.obj");
   mesh.shadingMode = ShadingMode::Smooth;
   auto triangles = createTriangleMesh(mesh);
   BVHAccel accel(std::move(triangles));

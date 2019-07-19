@@ -11,9 +11,9 @@ public:
   { }
 
   void computeScatteringFunctions(Interaction& isect) const override {
-    if (!kd.isBlack()) {
-      isect.bsdf = new Diffuse(kd);
-    }
+    if (kd.isBlack()) return;
+    isect.bsdf = new BSDF(isect);
+    isect.bsdf->add(new Diffuse(kd));
   }
 
 public:

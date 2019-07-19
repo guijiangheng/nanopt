@@ -11,8 +11,9 @@ public:
   { }
 
   void computeScatteringFunctions(Interaction& isect) const override {
-    if (!kr.isBlack())
-      isect.bsdf = new Mirror(kr);
+    if (kr.isBlack()) return;
+    isect.bsdf = new BSDF(isect);
+    isect.bsdf->add(new Mirror(kr));
   }
 
 public:

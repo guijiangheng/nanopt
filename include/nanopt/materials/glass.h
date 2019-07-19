@@ -12,8 +12,9 @@ public:
   { }
 
   void computeScatteringFunctions(Interaction& isect) const override {
-    if (!kr.isBlack() && !kt.isBlack())
-      isect.bsdf = new FresnelSpecular(kr, kt, eta);
+    if (kr.isBlack() && kt.isBlack()) return;
+    isect.bsdf = new BSDF(isect);
+    isect.bsdf->add(new FresnelSpecular(kr, kt, eta));
   }
 
 public:
