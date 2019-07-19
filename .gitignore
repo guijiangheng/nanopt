@@ -1,6 +1,7 @@
 .vs/
 .idea/
 .vscode/
+.DS_Store
 out/
 build/
 scenes/

@@ -1,12 +1,6 @@
 [submodule "ext/lodepng"]
 	path = ext/lodepng
 	url = https://github.com/lvandeve/lodepng.git
-[submodule "ext/openexr"]
-	path = ext/openexr
-	url = https://github.com/wjakob/openexr.git
-[submodule "ext/zlib"]
-	path = ext/zlib
-	url = https://github.com/mitsuba-renderer/zlib.git
 [submodule "ext/filesystem"]
 	path = ext/filesystem
 	url = https://github.com/gulrak/filesystem.git

@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.0)
 project(nanopt LANGUAGES CXX)
 
-if (NOT IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/ext/openexr")
-  message(FATAL_ERROR "The OpenEXR submodule directory is missing! "
+if (NOT IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/ext/lodepng")
+  message(FATAL_ERROR "The lodepng submodule directory is missing! "
     "You probably did not clone the project with --recursive. It is possible to recover by running "
     "\"git submodule update --init --recursive\"")
 endif()
@@ -105,17 +105,12 @@ target_include_directories(
   imageio PRIVATE
   "${CMAKE_CURRENT_SOURCE_DIR}/include"
   ${LODEPNG_INCLUDE_DIR}
-  ${OPENEXR_INCLUDE_DIRS}
+  ${TINYEXR_INCLUDE_DIR}
   ${GHC_FILESYSTEM_INCLUDE_DIR}
 )
 
-target_compile_features(imageio PRIVATE cxx_std_14)
-target_link_libraries(imageio PRIVATE ${OPENEXR_LIBS} lodepng ghc_filesystem)
-
-if(CMAKE_COMPILER_IS_GNUCXX)
-  target_link_libraries(imageio PRIVATE stdc++fs)
-  target_compile_options(imageio PRIVATE -Wno-deprecated)
-endif()
+target_compile_features(imageio PRIVATE cxx_std_17)
+target_link_libraries(imageio PRIVATE lodepng ghc_filesystem)
 
 add_library(
   nanopt STATIC
