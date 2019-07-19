@@ -25,7 +25,8 @@ public:
   Spectrum sampleOneLight(const Interaction& isect, const Scene& scene) const {
     auto nLights = scene.lights.size();
     if (!nLights) return Spectrum(0);
-    auto light = scene.lights[(std::size_t)(sampler.get1D() * nLights)];
+    auto lightIndex = std::min((std::size_t)(sampler.get1D() * nLights), nLights - 1);
+    auto light = scene.lights[lightIndex];
     return estimateDirect(isect, *light, scene) * nLights;
   }
 

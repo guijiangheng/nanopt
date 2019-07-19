@@ -52,7 +52,7 @@ int main() {
 
   BVHAccel accel(std::move(triangles));
   Scene scene(accel, std::move(lights));
-  RandomSampler sampler(512);
+  RandomSampler sampler(32);
   PathIntegrator integrator(camera, sampler, 10);
   parallelInit();
   integrator.render(scene);

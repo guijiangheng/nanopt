@@ -35,7 +35,7 @@ Distribution1D::Distribution1D(const float* func, int n) {
 
 float Distribution1D::sampleContinuous(float u, float& p, int& index) const {
   u *= n;
-  index = (int)u;
+  index = std::min((int)u, n - 1);
   auto uRemapped = u - index;
   if (uRemapped < aliasP[index]) {
     uRemapped /= aliasP[index];
@@ -49,7 +49,7 @@ float Distribution1D::sampleContinuous(float u, float& p, int& index) const {
 
 int Distribution1D::sampleDiscrete(float u, float& p) const {
   u *= n;
-  auto index = (int)u;
+  auto index = std::min((int)u, n - 1);
   auto uRemapped = u - index;
   if (uRemapped > aliasP[index])
     index = aliasIndex[index];
