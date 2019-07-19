@@ -106,11 +106,10 @@ target_include_directories(
   "${CMAKE_CURRENT_SOURCE_DIR}/include"
   ${LODEPNG_INCLUDE_DIR}
   ${TINYEXR_INCLUDE_DIR}
-  ${GHC_FILESYSTEM_INCLUDE_DIR}
 )
 
 target_compile_features(imageio PRIVATE cxx_std_17)
-target_link_libraries(imageio PRIVATE lodepng ghc_filesystem)
+target_link_libraries(imageio PRIVATE lodepng)
 
 add_library(
   nanopt STATIC
