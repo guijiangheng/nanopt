@@ -122,8 +122,9 @@ target_include_directories(
   "${CMAKE_CURRENT_SOURCE_DIR}/include"
 )
 
+find_package(Threads)
 target_compile_features(nanopt PRIVATE cxx_std_17)
-target_link_libraries(nanopt PRIVATE imageio)
+target_link_libraries(nanopt PRIVATE imageio ${CMAKE_THREAD_LIBS_INIT})
 
 add_executable(ao src/main/ao.cpp)
 add_executable(ajax src/main/ajax.cpp)
