@@ -7,3 +7,6 @@
 [submodule "ext/zlib"]
 	path = ext/zlib
 	url = https://github.com/mitsuba-renderer/zlib.git
+[submodule "ext/filesystem"]
+	path = ext/filesystem
+	url = https://github.com/gulrak/filesystem.git
