@@ -1,8 +1,10 @@
+#define TINYEXR_IMPLEMENTATION
+
+#include <cstring>
+#include <tinyexr.h>
 #include <ghc/filesystem.hpp>
 #include <lodepng/lodepng.h>
 #include <nanopt/utils/imageio.h>
-#include <ImfRgba.h>
-#include <ImfRgbaFile.h>
 
 namespace nanopt {
 
@@ -28,18 +30,15 @@ static Spectrum* readImagePNG(const std::string& filename, int& width, int& heig
 }
 
 static Spectrum* readImageEXR(const std::string& filename, int& width, int& height) {
-  using namespace Imf;
-  using namespace Imath;
-  RgbaInputFile file(filename.c_str());
-  auto window = file.dataWindow();
-  width = window.max.x - window.min.x + 1;
-  height = window.max.y - window.min.y + 1;
-  std::vector<Rgba> pixels(width * height);
-  file.setFrameBuffer(&pixels[0] - window.min.x - window.min.y * width, 1, width);
-  file.readPixels(window.min.y, window.max.y);
-  auto data = new Spectrum[width * height];
-  for (auto i = 0; i < width * height; ++i)
-    data[i] = { pixels[i].r, pixels[i].g, pixels[i].b };
+  float* rgba;
+  const char* err;
+  if (LoadEXR(&rgba, &width, &height, filename.c_str(), &err) != 0)
+    throw std::runtime_error("load exr from" + filename + " failed.");
+  auto nPixels = width * height;
+  auto data = new Spectrum[nPixels];
+  for (auto i = 0; i < nPixels; ++i)
+    data[i] = { rgba[i * 4 + 0], rgba[i * 4 + 1], rgba[i * 4 + 2] };
+  delete rgba;
   return data;
 }
 
@@ -68,16 +67,54 @@ static void writeImagePNG(const std::string& filename, int width, int height, Sp
 }
 
 static void writeImageEXR(const std::string& filename, int width, int height, Spectrum* data) {
-  using namespace Imf;
-  using namespace Imath;
-  std::unique_ptr<Rgba[]> rgbas(new Rgba[width * height]);
-  for (auto i = 0; i < width * height; ++i)
-    rgbas[i] = Rgba(data[i][0], data[i][1], data[i][2]);
-  Box2i displayWindow(V2i(0, 0), V2i(width - 1, height - 1));
-  Box2i dataWindow(V2i(0, 0), V2i(width - 1, height - 1));
-  RgbaOutputFile file(filename.c_str(), displayWindow, dataWindow, WRITE_RGB);
-  file.setFrameBuffer(rgbas.get(), 1, width);
-  file.writePixels(height);
+  EXRImage image;
+  InitEXRImage(&image);
+
+  image.num_channels = 3;
+
+  auto nPixels = width * height;
+  std::vector<float> images[3];
+  images[0].resize(nPixels);
+  images[1].resize(nPixels);
+  images[2].resize(nPixels);
+
+  for (auto i = 0; i < nPixels; ++i) {
+    images[0][i] = data[i].e[0];
+    images[1][i] = data[i].e[1];
+    images[2][i] = data[i].e[2];
+  }
+
+  float* imagePtr[3];
+  imagePtr[0] = &(images[2].at(0)); // B
+  imagePtr[1] = &(images[1].at(0)); // G
+  imagePtr[2] = &(images[0].at(0)); // R
+
+  image.images = (unsigned char**)imagePtr;
+  image.width = width;
+  image.height = height;
+
+  EXRHeader header;
+  InitEXRHeader(&header);
+  header.num_channels = 3;
+  header.channels = (EXRChannelInfo*)malloc(sizeof(EXRChannelInfo) * header.num_channels);
+  strcpy(header.channels[0].name, "B");
+  strcpy(header.channels[1].name, "G");
+  strcpy(header.channels[2].name, "R");
+  header.pixel_types = (int*)malloc(sizeof(int) * header.num_channels);
+  header.requested_pixel_types = (int*)malloc(sizeof(int) * header.num_channels);
+  for (auto i = 0; i < header.num_channels; ++i) {
+    header.pixel_types[i] = TINYEXR_PIXELTYPE_FLOAT;
+    header.requested_pixel_types[i] = TINYEXR_PIXELTYPE_HALF;
+  }
+
+  const char* err;
+  auto ret = SaveEXRImageToFile(&image, &header, filename.c_str(), &err);
+  if (ret != TINYEXR_SUCCESS)
+    throw std::runtime_error("save exr to" + filename + " failed.");
+
+  free(header.channels);
+  free(header.pixel_types);
+  free(header.requested_pixel_types);
 }
 
 void writeImage(const std::string& filename, int width, int height, Spectrum* data) {
