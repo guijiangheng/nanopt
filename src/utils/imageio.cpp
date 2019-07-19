@@ -48,9 +48,9 @@ static Spectrum* readImageEXR(const std::string& filename, int& width, int& heig
 std::unique_ptr<Spectrum[]>
 readImage(const std::string& filename, int& width, int& height) {
   auto ext = extension(filename);
-  if (ext == ".exr")
+  if (ext == "exr")
     return std::unique_ptr<Spectrum[]>(readImageEXR(filename, width, height));
-  else if (ext == ".png")
+  else if (ext == "png")
     return std::unique_ptr<Spectrum[]>(readImagePNG(filename, width, height));
   throw std::runtime_error("Input image file format \"" + ext + "\" not supported!");
 }
@@ -122,9 +122,9 @@ static void writeImageEXR(const std::string& filename, int width, int height, Sp
 
 void writeImage(const std::string& filename, int width, int height, Spectrum* data) {
   auto ext = extension(filename);
-  if (ext == ".exr")
+  if (ext == "exr")
     return writeImageEXR(filename, width, height, data);
-  else if (ext == ".png")
+  else if (ext == "png")
     return writeImagePNG(filename, width, height, data);
   throw std::runtime_error("Output image file format \"" + ext + "\" not supported!");
 }
