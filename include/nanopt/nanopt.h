@@ -10,11 +10,14 @@
 
 #include <nanopt/lights/point.h>
 #include <nanopt/lights/diffuse.h>
-#include <nanopt/samplers/random.h>
 
 #include <nanopt/materials/matte.h>
 #include <nanopt/materials/mirror.h>
 #include <nanopt/materials/glass.h>
+
+#include <nanopt/microfacets/beckmann.h>
+
+#include <nanopt/samplers/random.h>
 
 #include <nanopt/utils/objloader.h>
 #include <nanopt/utils/plyloader.h>

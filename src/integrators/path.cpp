@@ -61,12 +61,10 @@ Spectrum PathIntegrator::estimateDirect(
   float lightPdf;
   VisibilityTester tester;
   auto li = light.sample(isect, sampler.get2D(), wi, lightPdf, tester);
-
   if (li.isBlack()) return Spectrum(0);
 
   auto ld = Spectrum(0);
   auto f = isect.bsdf->f(isect.wo, wi) * absdot(isect.ns, wi);
-
   if (!f.isBlack() && tester.unoccluded(scene)) {
     if (light.isDelta())
       return f * li / lightPdf;
@@ -88,7 +86,6 @@ Spectrum PathIntegrator::estimateDirect(
       auto ray = isect.spawnRay(wi);
       auto foundIntersection = scene.intersect(ray, lightIsect);
       auto li = Spectrum(0);
-
       if (foundIntersection) {
         if ((Light*)lightIsect.triangle->light == &light)
           li = lightIsect.le(-wi);

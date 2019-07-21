@@ -42,6 +42,7 @@ set(
   include/nanopt/core/interaction.h
   include/nanopt/core/mesh.h
   include/nanopt/core/material.h
+  include/nanopt/core/microfacet.h
   include/nanopt/core/ray.h
   include/nanopt/core/sampler.h
   include/nanopt/core/parallel.h
@@ -59,6 +60,8 @@ set(
   include/nanopt/lights/point.h
   include/nanopt/lights/diffuse.h
   include/nanopt/lights/infinite.h
+
+  include/nanopt/microfacets/beckmann.h
 
   include/nanopt/materials/matte.h
   include/nanopt/materials/mirror.h
@@ -79,7 +82,6 @@ set(
 set(
   NANOPT_SRCS
   src/accelerators/bvh.cpp
-
   src/core/distribution1d.cpp
   src/core/fresnel.cpp
   src/core/integrator.cpp
@@ -87,11 +89,9 @@ set(
   src/core/triangle.cpp
   src/core/parallel.cpp
   src/core/visibilitytester.cpp
-
   src/integrators/path.cpp
-
+  src/microfacets/beckmann.cpp
   src/math/matrix4.cpp
-
   src/utils/objloader.cpp
   src/utils/plyloader.cpp
 )

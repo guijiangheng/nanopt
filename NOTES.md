@@ -1,8 +1,6 @@
-# 注意PNG是透明的情况
-解决步骤：
-* 先不处理PNG包含透明通道
-* 看最终渲染的结果，再看MINPT是怎么处理透明通道的
-
-# 搞清楚PBRT材质的细数比如Kd有没有先转化成XYZ
-
-该换行的地方还是要换行
+$$
+\begin{aligned}
+2 \pi \xi &= \arctan (\frac{\alpha_x}{\alpha_y} \tan \phi) \\
+\tan \phi &= \frac{\alpha_y}{\alpha_x} \tan(2 \pi \xi)
+\end{aligned}
+$$
