@@ -152,51 +152,48 @@ Vector3<T> max(const Vector3<T>& a, const Vector3<T>& b) {
   );
 }
 
-template <typename T>
-Vector3<T> lerp(const Vector3<T>& a, const Vector3<T>& b, T t) {
+inline Vector3f lerp(const Vector3f& a, const Vector3f& b, float t) {
   return a + (b - a) * t;
 }
 
-template <typename T>
-Vector3<T> barycentric(
-  const Vector3<T>& a,
-  const Vector3<T>& b,
-  const Vector3<T>& c,
-  const Vector2<T>& uv) {
+inline Vector3f barycentric(
+  const Vector3f& a,
+  const Vector3f& b,
+  const Vector3f& c,
+  const Vector2f& uv) {
 
   return a * (1 - uv.x - uv.y) + b * uv.x + c * uv.y;
 }
 
-template <typename T>
-Vector3<T> faceForward(const Vector3<T>& n, const Vector3<T>& v) {
+inline Vector3f faceForward(const Vector3f& n, const Vector3f& v) {
   return dot(n, v) > 0 ? n : -n;
 }
 
-template <typename T>
-Vector3<T> refract(const Vector3<T>& wi, const Vector3<T>& n, float eta) {
+inline Vector3f reflect(const Vector3f& w, const Vector3f& n) {
+  return -w + n * dot(w, n) * 2;
+}
+
+inline Vector3f refract(const Vector3f& wi, const Vector3f& n, float eta) {
   eta = 1 / eta;
   auto cosThetaI = wi.z * n.z;
   auto sin2ThetaI = std::max(0.0f, 1 - cosThetaI * cosThetaI);
   auto sin2ThetaT = sin2ThetaI * eta * eta;
   auto cosThetaT = std::sqrt(std::max(0.0f, 1 - sin2ThetaT));
-  return Vector3<T>(-wi.x * eta, -wi.y * eta, -wi.z * eta + (eta * cosThetaI - cosThetaT) * n.z);
+  return Vector3f(-wi.x * eta, -wi.y * eta, -wi.z * eta + (eta * cosThetaI - cosThetaT) * n.z);
 }
 
-template <typename T>
-Vector3<T> normalize(const Vector3<T>& v) {
+inline Vector3f normalize(const Vector3f& v) {
   return v / v.length();
 }
 
-template <typename T>
-T distance(const Vector3<T>& a, const Vector3<T>& b) {
+inline float distance(const Vector3f& a, const Vector3f& b) {
   return (a - b).length();
 }
 
-template <typename T>
-void coordinateSystem(const Vector3<T>& a, Vector3<T>& b, Vector3<T>& c) {
+inline void coordinateSystem(const Vector3f& a, Vector3f& b, Vector3f& c) {
   b = std::abs(a.x) > std::abs(a.y) ?
-    Vector3<T>(-a.z, 0, a.x) / std::sqrt(a.x * a.x + a.z * a.z) :
-    Vector3<T>(0, -a.z, a.y) / std::sqrt(a.y * a.y + a.z * a.z);
+    Vector3f(-a.z, 0, a.x) / std::sqrt(a.x * a.x + a.z * a.z) :
+    Vector3f(0, -a.z, a.y) / std::sqrt(a.y * a.y + a.z * a.z);
   c = cross(a, b);
 }
 

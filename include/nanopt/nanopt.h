@@ -14,6 +14,7 @@
 #include <nanopt/materials/matte.h>
 #include <nanopt/materials/mirror.h>
 #include <nanopt/materials/glass.h>
+#include <nanopt/materials/plastic.h>
 
 #include <nanopt/microfacets/beckmann.h>
 

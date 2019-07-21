@@ -10,9 +10,9 @@ public:
     : alphax(alphax), alphay(alphay)
   { }
 
-  float d(const Vector3f& wh) const override;
-
   float lambda(const Vector3f& w) const override;
+
+  float d(const Vector3f& wh) const override;
 
   Vector3f sample(const Vector2f& u) const override;
 

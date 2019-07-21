@@ -132,29 +132,25 @@ Vector2<T> max(const Vector2<T>& a, const Vector2<T>& b) {
   );
 }
 
-template <typename T>
-Vector2<T> lerp(const Vector2<T>& a, const Vector2<T>& b, T t) {
+inline Vector2f lerp(const Vector2f& a, const Vector2f& b, float t) {
   return a + (b - a) * t;
 }
 
 
-template <typename T>
-Vector2<T> barycentric(
-  const Vector2<T>& a,
-  const Vector2<T>& b,
-  const Vector2<T>& c,
-  const Vector2<T>& uv) {
+inline Vector2f barycentric(
+  const Vector2f& a,
+  const Vector2f& b,
+  const Vector2f& c,
+  const Vector2f& uv) {
 
   return a * (1 - uv.x - uv.y) + b * uv.x + c * uv.y;
 }
 
-template <typename T>
-Vector2<T> normalize(const Vector2<T>& v) {
+inline Vector2f normalize(const Vector2f& v) {
   return v / v.length();
 }
 
-template <typename T>
-T distance(const Vector2<T>& a, const Vector2<T>& b) {
+inline float distance(const Vector2f& a, const Vector2f& b) {
   return (a - b).length();
 }
 

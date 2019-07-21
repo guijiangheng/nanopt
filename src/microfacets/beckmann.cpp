@@ -7,6 +7,10 @@ float BeckmannDistribution::d(const Vector3f& wh) const {
   auto tan2Theta = nanopt::tan2Theta(wh);
   if (std::isinf(tan2Theta)) return 0;
   auto cos4Theta = cos2Theta(wh) * cos2Theta(wh);
+  if (alphax == alphay) {
+    auto inv = 1 / (alphax * alphax);
+    return std::exp(-tan2Theta * inv) * InvPi * inv / cos4Theta;
+  }
   return std::exp(-tan2Theta * (cos2Theta(wh) / (alphax * alphax) +
                                 sin2Theta(wh) / (alphay * alphay))) /
          (Pi * alphax * alphay * cos4Theta);

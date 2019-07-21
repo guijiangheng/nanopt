@@ -29,6 +29,7 @@ set(
   include/nanopt/bxdfs/mirror.h
   include/nanopt/bxdfs/specular.h
   include/nanopt/bxdfs/fresnelspecular.h
+  include/nanopt/bxdfs/microfacetreflection.h
 
   include/nanopt/core/bxdf.h
   include/nanopt/core/bsdf.h
@@ -66,6 +67,7 @@ set(
   include/nanopt/materials/matte.h
   include/nanopt/materials/mirror.h
   include/nanopt/materials/glass.h
+  include/nanopt/materials/plastic.h
 
   include/nanopt/math/math.h
   include/nanopt/math/bounds2.h
@@ -135,6 +137,7 @@ add_executable(bunny src/main/bunny.cpp)
 add_executable(dragon src/main/dragon.cpp)
 add_executable(imageio-test src/tests/imageio-test.cpp)
 add_executable(fireplace-room src/main/fireplace-room.cpp)
+add_executable(plastic src/main/plastic.cpp)
 add_executable(table src/main/table.cpp)
 
 set(
@@ -147,6 +150,7 @@ set(
   dragon
   imageio-test
   fireplace-room
+  plastic
   table
 )
 
