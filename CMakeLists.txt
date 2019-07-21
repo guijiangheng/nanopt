@@ -139,6 +139,7 @@ add_executable(imageio-test src/tests/imageio-test.cpp)
 add_executable(fireplace-room src/main/fireplace-room.cpp)
 add_executable(plastic src/main/plastic.cpp)
 add_executable(table src/main/table.cpp)
+add_executable(mis src/main/mis.cpp)
 
 set(
   NANOPT_EXES
@@ -152,6 +153,7 @@ set(
   fireplace-room
   plastic
   table
+  mis
 )
 
 foreach(target ${NANOPT_EXES})
