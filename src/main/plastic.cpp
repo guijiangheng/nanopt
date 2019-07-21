@@ -6,7 +6,7 @@ int main() {
   std::vector<Light*> lights;
   std::vector<Triangle*> triangles;
 
-  auto material = std::make_unique<PlasticMaterial>(Spectrum(0.2f, 0.2f, 0.4f), Spectrum(0.6f), 0.08f, true);
+  auto material = std::make_unique<PlasticMaterial>(Spectrum(0.2f, 0.2f, 0.4f), Spectrum(0.6f), 0.28f, false);
   auto ajaxMesh = loadMeshOBJ("../scenes/ajax.obj");
   ajaxMesh.shadingMode = ShadingMode::Smooth;
   auto ajaxTriangles = createTriangleMesh(ajaxMesh, material.get());
@@ -15,7 +15,7 @@ int main() {
   auto lightMesh = loadMeshOBJ("../scenes/light.obj");
   auto ligthTriangles = createTriangleMesh(lightMesh);
   for (auto triangle : ligthTriangles)
-    lights.push_back(new DiffuseAreaLight(triangle, Spectrum(64), true));
+    lights.push_back(new DiffuseAreaLight(triangle, Spectrum(20), true));
   triangles.insert(triangles.begin(), ligthTriangles.begin(), ligthTriangles.end());
 
   BVHAccel accel(std::move(triangles));
@@ -38,7 +38,7 @@ int main() {
   parallelInit();
   integrator.render(scene);
   parallelCleanup();
-  film.writeImage("plastic.exr");
+  film.writeImage("plastic.png");
 
   return 0;
 }
