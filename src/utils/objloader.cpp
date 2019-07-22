@@ -140,7 +140,7 @@ Mesh loadMeshOBJ(const std::string& filename) {
 
   return Mesh(
     ShadingMode::Flat,
-    positions.size(),
+    nVerts,
     indices.size() / 3,
     index, p, n, uv
   );

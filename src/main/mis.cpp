@@ -97,6 +97,7 @@ int main() {
   Film film(Vector2i(768, 512));
   Scene scene(accel, std::move(lights));
 
+  auto ratio = 512 / 768.f;
   PerspectiveCamera camera(
     Matrix4::lookAt(
       Vector3f(0, 6, -27.5),
@@ -104,11 +105,11 @@ int main() {
       Vector3f(0, 1, 0)
     ),
     film,
-    defaultScreenBounds(768.0f / 512),
+    Bounds2f(Vector2f(-1, -ratio), Vector2f(1, ratio)),
     25
   );
 
-  RandomSampler sampler(16);
+  RandomSampler sampler(256);
   PathIntegrator integrator(camera, sampler);
   parallelInit();
   integrator.render(scene);
