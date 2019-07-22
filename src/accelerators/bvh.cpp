@@ -1,3 +1,4 @@
+#include <memory>
 #include <algorithm>
 #include <nanopt/accelerators/bvh.h>
 
@@ -97,9 +98,9 @@ BVHNode* BVHAccel::exhaustBuild(
       return a.center[axis] < b.center[axis];
     });
 
-    Bounds3f rightBounds[SAH_APPLY_COUNT];
-    for (auto i = nPrims - 2; i >= 0; --i)
-      rightBounds[i] = merge(rightBounds[i + 1], primInfos[start + i + 1].bounds);
+    auto rightBounds = std::make_unique<Bounds3f[]>(nPrims);
+    for (auto i = nPrims - 1; i > 0; --i)
+      rightBounds[i - 1] = merge(rightBounds[i], primInfos[start + i].bounds);
 
     if (!totalBoundsInitialized) {
       totalBoundsInitialized = true;
