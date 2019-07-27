@@ -44,18 +44,18 @@ struct Bucket {
   Bounds3f bounds;
 };
 
-BVHAccel::BVHAccel(std::vector<Triangle*>&& prims) noexcept : primitives(std::move(prims)) {
-  auto size = primitives.size();
+BVHAccel::BVHAccel(std::vector<Triangle>&& tris) noexcept : triangles(std::move(tris)) {
+  auto nPrims = triangles.size();
   std::vector<PrimInfo> primInfos;
-  primInfos.reserve(size);
-  for (std::size_t i = 0; i < size; ++i)
-    primInfos.emplace_back(i, primitives[i]->getBounds());
+  primInfos.reserve(nPrims);
+  for (std::size_t i = 0; i < nPrims; ++i)
+    primInfos.emplace_back(i, triangles[i].getBounds());
 
   int totalNodes = 0;
-  std::vector<Triangle*> orderedPrims;
-  orderedPrims.reserve(size);
-  auto root = sahBuild(primInfos, 0, size, totalNodes, orderedPrims);
-  primitives = std::move(orderedPrims);
+  std::vector<Triangle> orderedPrims;
+  orderedPrims.reserve(nPrims);
+  auto root = sahBuild(primInfos, 0, nPrims, totalNodes, orderedPrims);
+  triangles = std::move(orderedPrims);
 
   nodes.reserve(totalNodes);
   flattenBVHTree(root);
@@ -65,13 +65,14 @@ BVHAccel::BVHAccel(std::vector<Triangle*>&& prims) noexcept : primitives(std::mo
 BVHNode* BVHAccel::createLeafNode(
     std::vector<PrimInfo>& primInfos,
     int start, int end, int& totalNodes,
-    std::vector<Triangle*>& orderedPrims) const {
+    std::vector<Triangle>& orderedPrims) const {
+
   ++totalNodes;
   Bounds3f bounds;
   auto firstPrimOffset = (int)orderedPrims.size();
   for (auto i = start; i < end; ++i) {
     bounds.merge(primInfos[i].bounds);
-    orderedPrims.push_back(primitives[primInfos[i].primIndex]);
+    orderedPrims.emplace_back(triangles[primInfos[i].primIndex]);
   }
   return new BVHNode(bounds, firstPrimOffset, end - start);
 }
@@ -79,7 +80,7 @@ BVHNode* BVHAccel::createLeafNode(
 BVHNode* BVHAccel::exhaustBuild(
   std::vector<PrimInfo>& primInfos,
   int start, int end, int& totalNodes,
-  std::vector<Triangle*>& orderedPrims) const {
+  std::vector<Triangle>& orderedPrims) const {
 
   auto nPrims = end - start;
   if (nPrims == 1)
@@ -141,7 +142,7 @@ BVHNode* BVHAccel::exhaustBuild(
 BVHNode* BVHAccel::sahBuild(
   std::vector<PrimInfo>& primInfos,
   int start, int end, int& totalNodes,
-  std::vector<Triangle*>& orderedPrims) const {
+  std::vector<Triangle>& orderedPrims) const {
 
   auto nPrims = end - start;
   if (nPrims == 1)
@@ -247,10 +248,10 @@ bool BVHAccel::intersect(const Ray& ray, Interaction& isect) const {
     if (node.bounds.intersect(ray, invDir, dirIsNeg)) {
       if (node.nPrims) {
         for (auto i = 0; i < node.nPrims; ++i) {
-          auto primitive = primitives[node.primsOffset + i];
-          if (primitive ->intersect(ray, isect)) {
+          auto& tri = triangles[node.primsOffset + i];
+          if (tri.intersect(ray, isect)) {
             hit = true;
-            isect.triangle = primitive;
+            isect.triangle = &tri;
           }
         }
       } else {
@@ -287,7 +288,7 @@ bool BVHAccel::intersect(const Ray& ray) const {
     if (node.bounds.intersect(ray, invDir, dirIsNeg)) {
       if (node.nPrims) {
         for (auto i = 0; i < node.nPrims; ++i)
-          if (primitives[node.primsOffset + i]->intersect(ray))
+          if (triangles[node.primsOffset + i].intersect(ray))
             return true;
       } else {
         if (dirIsNeg[node.splitAxis]) {

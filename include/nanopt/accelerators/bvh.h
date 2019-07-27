@@ -2,8 +2,8 @@
 
 #include <cstdint>
 #include <vector>
+#include <nanopt/core/accel.h>
 #include <nanopt/core/triangle.h>
-#include <nanopt/core/primitive.h>
 
 namespace nanopt {
 
@@ -28,14 +28,9 @@ struct LinearBVHNode {
   { }
 };
 
-class BVHAccel : public Primitive {
+class BVHAccel : public Accelerator {
 public:
-  BVHAccel(std::vector<Triangle*>&& prims) noexcept;
-
-  ~BVHAccel() noexcept {
-    for (auto p : primitives)
-      delete p;
-  }
+  BVHAccel(std::vector<Triangle>&& triangles) noexcept;
 
   Bounds3f getBounds() const override {
     return nodes[0].bounds;
@@ -49,24 +44,24 @@ private:
   BVHNode* createLeafNode(
     std::vector<PrimInfo>& primInfos,
     int start, int end, int& totalNodes,
-    std::vector<Triangle*>& orderedPrims) const;
+    std::vector<Triangle>& orderedPrims) const;
 
   BVHNode* exhaustBuild(
     std::vector<PrimInfo>& primInfos,
     int start, int end, int& totalNodes,
-    std::vector<Triangle*>& orderedPrims) const;
+    std::vector<Triangle>& orderedPrims) const;
 
   BVHNode* sahBuild(
     std::vector<PrimInfo>& primInfos,
     int start, int end, int& totalNodes,
-    std::vector<Triangle*>& orderedPrims) const;
+    std::vector<Triangle>& orderedPrims) const;
 
   void destroyBVHTree(const BVHNode* node) const;
 
   void flattenBVHTree(const BVHNode* node);
 
 private:
-  std::vector<Triangle*> primitives;
+  std::vector<Triangle> triangles;
   std::vector<LinearBVHNode> nodes;
   static constexpr int BUCKETS = 16;
   static constexpr int SAH_APPLY_COUNT = 32;

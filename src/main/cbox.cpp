@@ -32,8 +32,8 @@ int main() {
   std::vector<Light*> lights;
   auto lightMesh = loadMeshOBJ("../scenes/cbox/light.obj");
   auto lightTriangles = createTriangleMesh(lightMesh);
-  for (auto triangle : lightTriangles)
-    lights.push_back(new DiffuseAreaLight(triangle, Spectrum(40)));
+  for (auto& triangle : lightTriangles)
+    lights.push_back(new DiffuseAreaLight(&triangle, Spectrum(40)));
   triangles.insert(triangles.begin(), lightTriangles.begin(), lightTriangles.end());
 
 

@@ -4,7 +4,7 @@ using namespace nanopt;
 
 int main() {
   std::vector<Light*> lights;
-  std::vector<Triangle*> triangles;
+  std::vector<Triangle> triangles;
 
   auto mesh = loadMeshOBJ("../scenes/table/mesh_1.obj");
 
@@ -13,8 +13,8 @@ int main() {
     mesh
   );
   auto lightMesh1Triangles = createTriangleMesh(lightMesh1);
-  for (auto triangle : lightMesh1Triangles)
-    lights.push_back(new DiffuseAreaLight(triangle, Spectrum(3, 3, 2.5), true));
+  for (auto& triangle : lightMesh1Triangles)
+    lights.push_back(new DiffuseAreaLight(&triangle, Spectrum(3, 3, 2.5), true));
   triangles.insert(triangles.begin(), lightMesh1Triangles.begin(), lightMesh1Triangles.end());
 
   auto lightMesh2 = Mesh(
@@ -22,8 +22,8 @@ int main() {
     mesh
   );
   auto lightMesh2Triangles = createTriangleMesh(lightMesh2);
-  for (auto triangle : lightMesh2Triangles)
-    lights.push_back(new DiffuseAreaLight(triangle, Spectrum(1, 1, 1.6), true));
+  for (auto& triangle : lightMesh2Triangles)
+    lights.push_back(new DiffuseAreaLight(&triangle, Spectrum(1, 1, 1.6), true));
   triangles.insert(triangles.begin(), lightMesh2Triangles.begin(), lightMesh2Triangles.end());
 
   auto plateMaterial = std::make_unique<MatteMaterial>(Spectrum(0.2));

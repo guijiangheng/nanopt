@@ -31,6 +31,7 @@ set(
   include/nanopt/bxdfs/fresnelspecular.h
   include/nanopt/bxdfs/microfacetreflection.h
 
+  include/nanopt/core/accel.h
   include/nanopt/core/bxdf.h
   include/nanopt/core/bsdf.h
   include/nanopt/core/camera.h
@@ -47,7 +48,6 @@ set(
   include/nanopt/core/ray.h
   include/nanopt/core/sampler.h
   include/nanopt/core/parallel.h
-  include/nanopt/core/primitive.h
   include/nanopt/core/scene.h
   include/nanopt/core/spectrum.h
   include/nanopt/core/triangle.h

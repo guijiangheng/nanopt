@@ -6,9 +6,9 @@
 
 namespace nanopt {
 
-class Primitive {
+class Accelerator {
 public:
-  virtual ~Primitive() = default;
+  virtual ~Accelerator() = default;
   virtual Bounds3f getBounds() const = 0;
   virtual bool intersect(const Ray& ray) const = 0;
   virtual bool intersect(const Ray& ray, Interaction& isect) const = 0;

@@ -40,7 +40,7 @@ public:
   Vector2f uv;
   Vector3f wo;
   BSDF* bsdf;
-  Triangle* triangle;
+  const Triangle* triangle;
   static constexpr auto ShadowEpsilon = 0.0001f;
   static constexpr auto RayOriginOffsetEpsilon = 0.00001f;
 };

@@ -4,7 +4,7 @@ using namespace nanopt;
 
 int main() {
   std::vector<Light*> lights;
-  std::vector<Triangle*> triangles;
+  std::vector<Triangle> triangles;
   auto sphere = loadMeshOBJ("../scenes/veach_mi/sphere.obj");
 
   auto sphere1 = Mesh(
@@ -12,8 +12,8 @@ int main() {
     sphere
   );
   auto sphere1Triangles = createTriangleMesh(sphere1);
-  for (auto triangle : sphere1Triangles)
-    lights.push_back(new DiffuseAreaLight(triangle, Spectrum(100)));
+  for (auto& triangle : sphere1Triangles)
+    lights.push_back(new DiffuseAreaLight(&triangle, Spectrum(100)));
   triangles.insert(triangles.begin(), sphere1Triangles.begin(), sphere1Triangles.end());
 
   auto sphere2 = Mesh(
@@ -21,8 +21,8 @@ int main() {
     sphere
   );
   auto sphere2Triangles = createTriangleMesh(sphere2);
-  for (auto triangle : sphere2Triangles)
-    lights.push_back(new DiffuseAreaLight(triangle, Spectrum(901.803f)));
+  for (auto& triangle : sphere2Triangles)
+    lights.push_back(new DiffuseAreaLight(&triangle, Spectrum(901.803f)));
   triangles.insert(triangles.begin(), sphere2Triangles.begin(), sphere2Triangles.end());
 
   auto sphere3 = Mesh(
@@ -30,8 +30,8 @@ int main() {
     sphere
   );
   auto sphere3Triangles = createTriangleMesh(sphere3);
-  for (auto triangle : sphere3Triangles)
-    lights.push_back(new DiffuseAreaLight(triangle, Spectrum(11.1111f)));
+  for (auto& triangle : sphere3Triangles)
+    lights.push_back(new DiffuseAreaLight(&triangle, Spectrum(11.1111f)));
   triangles.insert(triangles.begin(), sphere3Triangles.begin(), sphere3Triangles.end());
 
   auto sphere4 = Mesh(
@@ -39,8 +39,8 @@ int main() {
     sphere
   );
   auto sphere4Triangles = createTriangleMesh(sphere4);
-  for (auto triangle : sphere4Triangles)
-    lights.push_back(new DiffuseAreaLight(triangle, Spectrum(1.23457f)));
+  for (auto& triangle : sphere4Triangles)
+    lights.push_back(new DiffuseAreaLight(&triangle, Spectrum(1.23457f)));
   triangles.insert(triangles.begin(), sphere4Triangles.begin(), sphere4Triangles.end());
 
   auto sphere5 = Mesh(
@@ -48,8 +48,8 @@ int main() {
     sphere
   );
   auto sphere5Triangles = createTriangleMesh(sphere5);
-  for (auto triangle : sphere5Triangles)
-    lights.push_back(new DiffuseAreaLight(triangle, Spectrum(100.0f)));
+  for (auto& triangle : sphere5Triangles)
+    lights.push_back(new DiffuseAreaLight(&triangle, Spectrum(100.0f)));
   triangles.insert(triangles.begin(), sphere5Triangles.begin(), sphere5Triangles.end());
 
   auto plate1Material = std::make_unique<PlasticMaterial>(
