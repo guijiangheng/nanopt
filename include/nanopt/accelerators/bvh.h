@@ -9,6 +9,7 @@ namespace nanopt {
 
 struct BVHNode;
 struct PrimInfo;
+struct MortonPrimitive;
 
 struct LinearBVHNode {
   Bounds3f bounds;
@@ -30,7 +31,9 @@ struct LinearBVHNode {
 
 class BVHAccel : public Accelerator {
 public:
-  BVHAccel(std::vector<Triangle>&& triangles) noexcept;
+  enum class BuildMethod { SAH, HLBVH };
+
+  BVHAccel(std::vector<Triangle>&& triangles, BuildMethod method = BuildMethod::SAH) noexcept;
 
   Bounds3f getBounds() const override {
     return nodes[0].bounds;
@@ -43,17 +46,50 @@ public:
 private:
   BVHNode* createLeafNode(
     std::vector<PrimInfo>& primInfos,
-    int start, int end, int& totalNodes,
+    int beg,
+    int end,
+    int& totalNodes,
     std::vector<Triangle>& orderedPrims) const;
 
   BVHNode* exhaustBuild(
     std::vector<PrimInfo>& primInfos,
-    int start, int end, int& totalNodes,
+    int beg,
+    int end,
+    int& totalNodes,
     std::vector<Triangle>& orderedPrims) const;
 
   BVHNode* sahBuild(
     std::vector<PrimInfo>& primInfos,
-    int start, int end, int& totalNodes,
+    int beg,
+    int end,
+    int& totalNodes,
+    std::vector<Triangle>& orderedPrims) const;
+
+  BVHNode* exhaustBuildUpper(
+    std::vector<BVHNode*>& treelets,
+    int beg,
+    int end,
+    int& totalNodes) const;
+
+  BVHNode* buildUpperSAH(
+    std::vector<BVHNode*>& treelets,
+    int beg,
+    int end,
+    int& totalNodes) const;
+
+  BVHNode* buildTreelet(
+    std::vector<PrimInfo>& primInfos,
+    std::vector<MortonPrimitive>& mortonPrims,
+    int beg,
+    int end,
+    int& totalNodes,
+    std::atomic<int>& orderedPrimsOffset,
+    std::vector<Triangle>& orderedPrims,
+    int bitIndex) const;
+
+  BVHNode* hierarchicalLinearBuild(
+    std::vector<PrimInfo>& primInfos,
+    int& totalNodes,
     std::vector<Triangle>& orderedPrims) const;
 
   void destroyBVHTree(const BVHNode* node) const;

@@ -6,7 +6,8 @@ int main() {
   auto mesh = loadMeshOBJ("../scenes/fireplace-room/fireplace-room.obj");
   mesh.shadingMode = ShadingMode::Smooth;
   auto triangles = createTriangleMesh(mesh);
-  BVHAccel accel(std::move(triangles));
+  parallelInit();
+  BVHAccel accel(std::move(triangles), BVHAccel::BuildMethod::HLBVH);
   Scene scene(accel);
   Film film(Vector2i(1920, 1080));
 
@@ -23,7 +24,6 @@ int main() {
 
   RandomSampler sampler(4);
   NormalIntegrator integrator(camera, sampler);
-  parallelInit();
   integrator.render(scene);
   parallelCleanup();
   film.writeImage("./fireplace-room.png");

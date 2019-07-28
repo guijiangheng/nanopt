@@ -5,7 +5,8 @@ using namespace nanopt;
 int main() {
   auto mesh = loadMeshOBJ("../scenes/ajax.obj");
   auto triangles = createTriangleMesh(mesh);
-  BVHAccel accel(std::move(triangles));
+  parallelInit();
+  BVHAccel accel(std::move(triangles), BVHAccel::BuildMethod::HLBVH);
   Scene scene(accel);
   Film film(Vector2i(768, 768));
 
@@ -20,9 +21,8 @@ int main() {
     30
   );
 
-  RandomSampler sampler(32);
+  RandomSampler sampler(1);
   NormalIntegrator integrator(camera, sampler);
-  parallelInit();
   integrator.render(scene);
   parallelCleanup();
   film.writeImage("./ajax.png");

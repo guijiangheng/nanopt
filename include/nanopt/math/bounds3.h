@@ -29,20 +29,28 @@ public:
     return (&pMin)[index];
   }
 
-  Bounds3 merge(const Vector3<T>& p) {
+  Bounds3& merge(const Vector3<T>& p) {
     pMin = min(pMin, p);
     pMax = max(pMax, p);
     return *this;
   }
 
-  Bounds3 merge(const Bounds3& b) {
+  Bounds3& merge(const Bounds3& b) {
     pMin = min(pMin, b.pMin);
     pMax = max(pMax, b.pMax);
     return *this;
   }
 
+  Vector3<T> centroid() const {
+    return (pMin + pMax) / 2;
+  }
+
   Vector3<T> diag() const {
     return pMax - pMin;
+  }
+
+  Vector3<T> offset(const Vector3<T>& p) const {
+    return (p - pMin) / diag();
   }
 
   T area() const {

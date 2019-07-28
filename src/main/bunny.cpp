@@ -5,7 +5,8 @@ using namespace nanopt;
 int main() {
   auto mesh = loadMeshOBJ("../scenes/bunny.obj");
   auto triangles = createTriangleMesh(mesh);
-  BVHAccel accel(std::move(triangles));
+  parallelInit();
+  BVHAccel accel(std::move(triangles), BVHAccel::BuildMethod::HLBVH);
   Scene scene(accel);
   Film film(Vector2i(512, 512));
   PerspectiveCamera camera(
@@ -20,7 +21,6 @@ int main() {
   );
   RandomSampler sampler(1);
   NormalIntegrator integrator(camera, sampler);
-  parallelInit();
   integrator.render(scene);
   parallelCleanup();
   film.writeImage("bunny.png");

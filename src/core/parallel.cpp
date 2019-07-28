@@ -86,7 +86,7 @@ void parallelCleanup() {
   shutdownThreads = false;
 }
 
-void parallelFor1D(std::function<void(std::int64_t)> func, std::int64_t count, int chunkSize) {
+void parallelFor(std::function<void(std::int64_t)> func, std::int64_t count, int chunkSize) {
   if (threads.empty() || count < chunkSize) {
     for (std::int64_t i = 0; i < count; ++i)
       func(i);
