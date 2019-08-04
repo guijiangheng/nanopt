@@ -5,9 +5,10 @@ using namespace nanopt;
 int main() {
   auto mesh = loadMeshOBJ("../scenes/fireplace-room/fireplace_room.obj");
   mesh.shadingMode = ShadingMode::Smooth;
-  auto triangles = createTriangleMesh(mesh);
-  BVHAccel accel(std::move(triangles));
-  Scene scene(accel);
+
+  Scene scene;
+  scene.addMesh(mesh);
+
   Film film(Vector2i(1920, 1080));
 
   PerspectiveCamera camera(

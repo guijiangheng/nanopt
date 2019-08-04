@@ -12,17 +12,9 @@ public:
     : pLight(pLight), intensity(intensity)
   { }
 
-  bool isDelta() const override {
-    return true;
-  }
-
-  float pdf(const Interaction& ref, const Vector3f& w) const override {
-    return 0;
-  }
-
   Spectrum sample(
     const Interaction& ref,
-    const Vector2f& sample,
+    Vector2f& u,
     Vector3f& wi, float& pdf, VisibilityTester& tester) const override {
 
     pdf = 1;

@@ -3,39 +3,39 @@
 using namespace nanopt;
 
 int main() {
+  Scene scene;
+
   auto wallsMat = std::make_unique<MatteMaterial>(Spectrum(0.725, 0.71, 0.68));
   auto wallsMesh = loadMeshOBJ("../scenes/cbox/walls.obj");
-  auto triangles = createTriangleMesh(wallsMesh, wallsMat.get());
+  wallsMesh.material = wallsMat.get();
+  scene.addMesh(wallsMesh);
 
   auto rightWallMat = std::make_unique<MatteMaterial>(Spectrum(0.161, 0.133, 0.427));
   auto rightWallMesh = loadMeshOBJ("../scenes/cbox/rightwall.obj");
-  auto rightWallTriangles = createTriangleMesh(rightWallMesh, rightWallMat.get());
-  triangles.insert(triangles.begin(), rightWallTriangles.begin(), rightWallTriangles.end());
+  rightWallMesh.material = rightWallMat.get();
+  scene.addMesh(rightWallMesh);
 
   auto leftWallMat = std::make_unique<MatteMaterial>(Spectrum(0.630, 0.065, 0.05));
   auto leftWallMesh = loadMeshOBJ("../scenes/cbox/leftwall.obj");
-  auto leftWallTriangles = createTriangleMesh(leftWallMesh, leftWallMat.get());
-  triangles.insert(triangles.begin(), leftWallTriangles.begin(), leftWallTriangles.end());
+  leftWallMesh.material = leftWallMat.get();
+  scene.addMesh(leftWallMesh);
 
   auto sphere1Mat = std::make_unique<MirrorMaterial>(Spectrum(1.0f));
   auto sphere1Mesh = loadMeshOBJ("../scenes/cbox/sphere1.obj");
-  auto sphere1Triangles = createTriangleMesh(sphere1Mesh, sphere1Mat.get());
-  triangles.insert(triangles.begin(), sphere1Triangles.begin(), sphere1Triangles.end());
+  sphere1Mesh.material = sphere1Mat.get();
   sphere1Mesh.shadingMode = ShadingMode::Smooth;
+  scene.addMesh(sphere1Mesh);
 
   auto sphere2Mat = std::make_unique<GlassMaterial>(Spectrum(1), Spectrum(1), 1.4f);
   auto sphere2Mesh = loadMeshOBJ("../scenes/cbox/sphere2.obj");
-  auto sphere2Triangles = createTriangleMesh(sphere2Mesh, sphere2Mat.get());
-  triangles.insert(triangles.begin(), sphere2Triangles.begin(), sphere2Triangles.end());
+  sphere2Mesh.material = sphere2Mat.get();
   sphere2Mesh.shadingMode = ShadingMode::Smooth;
+  scene.addMesh(sphere2Mesh);
 
-  std::vector<Light*> lights;
   auto lightMesh = loadMeshOBJ("../scenes/cbox/light.obj");
-  auto lightTriangles = createTriangleMesh(lightMesh);
-  for (auto& triangle : lightTriangles)
-    lights.push_back(new DiffuseAreaLight(&triangle, Spectrum(40)));
-  triangles.insert(triangles.begin(), lightTriangles.begin(), lightTriangles.end());
+  scene.addLight(new DiffuseAreaLight(&lightMesh, Spectrum(40)));
 
+  scene.activate();
 
   Film film(Vector2i(800, 600));
   PerspectiveCamera camera(
@@ -50,8 +50,6 @@ int main() {
     27.7856
   );
 
-  BVHAccel accel(std::move(triangles));
-  Scene scene(accel, std::move(lights));
   RandomSampler sampler(32);
   PathIntegrator integrator(camera, sampler, 10);
   parallelInit();

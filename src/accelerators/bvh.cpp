@@ -57,20 +57,24 @@ struct LBVHTreelet {
   BVHNode* node;
 };
 
-BVHAccel::BVHAccel(std::vector<Triangle>&& tris, BuildMethod method) noexcept : triangles(std::move(tris)) {
-  auto nPrims = triangles.size();
+void BVHAccel::build(BuildMethod method) {
+  auto nPrims = getPrimitiveCount();
+  primIndices.resize(nPrims);
+  for (auto i = 0; i < nPrims; ++i)
+    primIndices[i] = i;
+
   std::vector<PrimInfo> primInfos;
   primInfos.reserve(nPrims);
-  for (std::size_t i = 0; i < nPrims; ++i)
-    primInfos.emplace_back(i, triangles[i].getBounds());
+  for (auto i = 0; i < nPrims; ++i)
+    primInfos.emplace_back(i, Accelerator::getBounds(i));
 
   int totalNodes = 0;
-  std::vector<Triangle> orderedPrims;
+  std::vector<int> orderedPrims;
   orderedPrims.reserve(nPrims);
   auto root = method == BuildMethod::SAH ?
     sahBuild(primInfos, 0, nPrims, totalNodes, orderedPrims) :
     hierarchicalLinearBuild(primInfos, totalNodes, orderedPrims);
-  triangles = std::move(orderedPrims);
+  primIndices = std::move(orderedPrims);
 
   nodes.reserve(totalNodes);
   flattenBVHTree(root);
@@ -82,14 +86,14 @@ BVHNode* BVHAccel::createLeafNode(
     int beg,
     int end,
     int& totalNodes,
-    std::vector<Triangle>& orderedPrims) const {
+    std::vector<int>& orderedPrims) const {
 
   ++totalNodes;
   Bounds3f bounds;
   auto firstPrimOffset = (int)orderedPrims.size();
   for (auto i = beg; i < end; ++i) {
     bounds.merge(primInfos[i].bounds);
-    orderedPrims.emplace_back(triangles[primInfos[i].primIndex]);
+    orderedPrims.emplace_back(primIndices[i]);
   }
 
   return new BVHNode(bounds, firstPrimOffset, end - beg);
@@ -100,7 +104,7 @@ BVHNode* BVHAccel::exhaustBuild(
   int beg,
   int end,
   int& totalNodes,
-  std::vector<Triangle>& orderedPrims) const {
+  std::vector<int>& orderedPrims) const {
 
   auto nPrims = end - beg;
   if (nPrims == 1)
@@ -164,7 +168,7 @@ BVHNode* BVHAccel::sahBuild(
   int beg,
   int end,
   int& totalNodes,
-  std::vector<Triangle>& orderedPrims) const {
+  std::vector<int>& orderedPrims) const {
 
   auto nPrims = end - beg;
   if (nPrims == 1)
@@ -350,7 +354,7 @@ BVHNode* BVHAccel::buildTreelet(
   int end,
   int& totalNodes,
   std::atomic<int>& orderedPrimsOffset,
-  std::vector<Triangle>& orderedPrims,
+  std::vector<int>& orderedPrims,
   int bitIndex) const {
 
   auto nPrims = end - beg;
@@ -362,7 +366,7 @@ BVHNode* BVHAccel::buildTreelet(
     for (auto i = beg; i < end; ++i) {
       auto primIndex = mortonPrims[i].primIndex;
       bounds.merge(primInfos[primIndex].bounds);
-      orderedPrims[orderedPrimsIndex++] = triangles[primIndex];
+      orderedPrims[orderedPrimsIndex++] = primIndices[primIndex];
     }
     return new BVHNode(bounds, firstPrimOffset, nPrims);
   }
@@ -472,7 +476,7 @@ BVHNode* BVHAccel::buildUpperSAH(
 BVHNode* BVHAccel::hierarchicalLinearBuild(
   std::vector<PrimInfo>& primInfos,
   int& totalNodes,
-  std::vector<Triangle>& orderedPrims) const {
+  std::vector<int>& orderedPrims) const {
 
   Bounds3f bounds;
   for (auto& p : primInfos)
@@ -552,6 +556,7 @@ bool BVHAccel::intersect(const Ray& ray, Interaction& isect) const {
   Vector3f invDir(1 / ray.d.x, 1 / ray.d.y, 1 / ray.d.z);
   const int dirIsNeg[3] = { invDir.x < 0, invDir.y < 0, invDir.z < 0 };
 
+  int triIndex;
   auto hit = false;
   int nodesToVisit[64];
   nodesToVisit[0] = 0;
@@ -563,10 +568,11 @@ bool BVHAccel::intersect(const Ray& ray, Interaction& isect) const {
     if (node.bounds.intersect(ray, invDir, dirIsNeg)) {
       if (node.nPrims) {
         for (auto i = 0; i < node.nPrims; ++i) {
-          auto& tri = triangles[node.primsOffset + i];
-          if (tri.intersect(ray, isect)) {
+          triIndex = primIndices[node.primsOffset + i];
+          auto mesh = findMesh(triIndex);
+          if (mesh->intersect(triIndex, ray, isect)) {
             hit = true;
-            isect.triangle = &tri;
+            isect.mesh = mesh;
           }
         }
       } else {
@@ -582,7 +588,7 @@ bool BVHAccel::intersect(const Ray& ray, Interaction& isect) const {
   }
 
   if (hit) {
-    isect.triangle->computeIntersection(isect);
+    isect.mesh->computeIntersection(triIndex, isect);
     isect.wo = -ray.d;
   }
 
@@ -602,9 +608,12 @@ bool BVHAccel::intersect(const Ray& ray) const {
     auto& node = nodes[currentIndex];
     if (node.bounds.intersect(ray, invDir, dirIsNeg)) {
       if (node.nPrims) {
-        for (auto i = 0; i < node.nPrims; ++i)
-          if (triangles[node.primsOffset + i].intersect(ray))
+        for (auto i = 0; i < node.nPrims; ++i) {
+          auto triIndex = primIndices[node.primsOffset + i];
+          auto mesh = findMesh(triIndex);
+          if (mesh->intersect(triIndex, ray))
             return true;
+        }
       } else {
         if (dirIsNeg[node.splitAxis]) {
           nodesToVisit[++toVisitOffset] = currentIndex + 1;

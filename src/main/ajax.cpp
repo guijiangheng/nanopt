@@ -3,13 +3,12 @@
 using namespace nanopt;
 
 int main() {
+  Scene scene;
   auto mesh = loadMeshOBJ("../scenes/ajax.obj");
-  auto triangles = createTriangleMesh(mesh);
-  parallelInit();
-  BVHAccel accel(std::move(triangles), BVHAccel::BuildMethod::HLBVH);
-  Scene scene(accel);
-  Film film(Vector2i(768, 768));
+  scene.addMesh(mesh);
+  scene.activate();
 
+  Film film(Vector2i(768, 768));
   PerspectiveCamera camera(
     Matrix4::lookAt(
       Vector3f(-65.6055, 47.5762, -24.3583),
@@ -23,6 +22,7 @@ int main() {
 
   RandomSampler sampler(1);
   NormalIntegrator integrator(camera, sampler);
+  parallelInit();
   integrator.render(scene);
   parallelCleanup();
   film.writeImage("./ajax.png");

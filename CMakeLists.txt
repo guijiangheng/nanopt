@@ -49,7 +49,6 @@ set(
   include/nanopt/core/parallel.h
   include/nanopt/core/scene.h
   include/nanopt/core/spectrum.h
-  include/nanopt/core/triangle.h
 
   include/nanopt/cameras/perspective.h
 
@@ -87,7 +86,6 @@ set(
   src/core/integrator.cpp
   src/core/interaction.cpp
   src/core/mesh.cpp
-  src/core/triangle.cpp
   src/core/parallel.cpp
   src/core/visibilitytester.cpp
   src/integrators/path.cpp

@@ -1,6 +1,5 @@
 #include <memory>
 #include <nanopt/core/bsdf.h>
-#include <nanopt/core/triangle.h>
 #include <nanopt/core/visibilitytester.h>
 #include <nanopt/lights/infinite.h>
 #include <nanopt/integrators/path.h>
@@ -60,7 +59,8 @@ Spectrum PathIntegrator::estimateDirect(
   Vector3f wi;
   float lightPdf;
   VisibilityTester tester;
-  auto li = light.sample(isect, sampler.get2D(), wi, lightPdf, tester);
+  auto sample = sampler.get2D();
+  auto li = light.sample(isect, sample, wi, lightPdf, tester);
   if (li.isBlack()) return Spectrum(0);
 
   auto ld = Spectrum(0);
@@ -72,32 +72,32 @@ Spectrum PathIntegrator::estimateDirect(
     ld += f * li * powerHeuristic(lightPdf, scatteringPdf) / lightPdf;
   }
 
-  if (!light.isDelta() && !isect.bsdf->isDelta()) {
-    float etaScale;
-    float scatteringPdf;
-    f = isect.bsdf->sample(sampler.get2D(), isect.wo, wi, scatteringPdf, etaScale);
-    f *= absdot(isect.ns, wi);
+  // if (!light.isDelta() && !isect.bsdf->isDelta()) {
+  //   float etaScale;
+  //   float scatteringPdf;
+  //   f = isect.bsdf->sample(sampler.get2D(), isect.wo, wi, scatteringPdf, etaScale);
+  //   f *= absdot(isect.ns, wi);
 
-    if (!f.isBlack()) {
-      lightPdf = light.pdf(isect, wi);
-      if (lightPdf == 0) return ld;
+  //   if (!f.isBlack()) {
+  //     lightPdf = light.pdf(isect, wi);
+  //     if (lightPdf == 0) return ld;
 
-      Interaction lightIsect;
-      auto ray = isect.spawnRay(wi);
-      auto foundIntersection = scene.intersect(ray, lightIsect);
-      auto li = Spectrum(0);
-      if (foundIntersection) {
-        if ((Light*)lightIsect.triangle->light == &light)
-          li = lightIsect.le(-wi);
-      } else {
-        li = ((InfiniteAreaLight*)&light)->le(ray);
-      }
+  //     Interaction lightIsect;
+  //     auto ray = isect.spawnRay(wi);
+  //     auto foundIntersection = scene.intersect(ray, lightIsect);
+  //     auto li = Spectrum(0);
+  //     if (foundIntersection) {
+  //       if ((Light*)lightIsect.triangle->light == &light)
+  //         li = lightIsect.le(-wi);
+  //     } else {
+  //       li = ((InfiniteAreaLight*)&light)->le(ray);
+  //     }
 
-      if (!li.isBlack()) {
-        ld += f * li * powerHeuristic(scatteringPdf, lightPdf) / scatteringPdf;
-      }
-    }
-  }
+  //     if (!li.isBlack()) {
+  //       ld += f * li * powerHeuristic(scatteringPdf, lightPdf) / scatteringPdf;
+  //     }
+  //   }
+  // }
 
   return ld;
 }

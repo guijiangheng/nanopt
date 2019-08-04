@@ -3,10 +3,13 @@
 using namespace nanopt;
 
 int main() {
+  Scene scene;
+
   auto dragon = Mesh(
     Matrix4::rotate(Vector3f(0, 1, 0), -53),
     loadMeshPLY("../scenes/dragon.ply")
   );
+  scene.addMesh(dragon);
 
   int indices[] = { 0, 1, 2, 2, 3, 0 };
   Vector3f vertices[] = {
@@ -25,13 +28,9 @@ int main() {
     ShadingMode::Flat, 4, 2,
     pIndices, pVertices, nullptr, nullptr
   );
+  scene.addMesh(plane);
+  scene.activate();
 
-  auto triangles = createTriangleMesh(dragon);
-  auto planeTriangles = createTriangleMesh(plane);
-  triangles.insert(triangles.begin(), planeTriangles.begin(), planeTriangles.end());
-
-  BVHAccel accel(std::move(triangles));
-  Scene scene(accel);
   Film film(Vector2i(800, 800));
   PerspectiveCamera camera(
     Matrix4::lookAt(

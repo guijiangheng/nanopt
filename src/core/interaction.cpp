@@ -1,4 +1,4 @@
-#include <nanopt/core/triangle.h>
+#include <nanopt/core/mesh.h>
 #include <nanopt/lights/diffuse.h>
 #include <nanopt/core/interaction.h>
 
@@ -9,14 +9,14 @@ Interaction::~Interaction() noexcept {
 }
 
 Spectrum Interaction::le(const Vector3f& w) const {
-  if (triangle->light)
-    return triangle->light->le(*this, w);
+  if (mesh->light)
+    return mesh->light->le(*this, w);
   return Spectrum(0);
 }
 
 void Interaction::computeScatteringFunctions() {
-  if (triangle->material) {
-    triangle->material->computeScatteringFunctions(*this);
+  if (mesh->material) {
+    mesh->material->computeScatteringFunctions(*this);
   }
 }
 

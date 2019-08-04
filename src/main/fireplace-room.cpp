@@ -3,14 +3,13 @@
 using namespace nanopt;
 
 int main() {
+  Scene scene;
   auto mesh = loadMeshOBJ("../scenes/fireplace-room/fireplace-room.obj");
   mesh.shadingMode = ShadingMode::Smooth;
-  auto triangles = createTriangleMesh(mesh);
+  scene.addMesh(mesh);
+  scene.activate();
   parallelInit();
-  BVHAccel accel(std::move(triangles), BVHAccel::BuildMethod::HLBVH);
-  Scene scene(accel);
   Film film(Vector2i(1920, 1080));
-
   PerspectiveCamera camera(
     Matrix4::lookAt(
       Vector3f(5.101118f, 1.083746f, 2.756308f),

@@ -1,18 +1,18 @@
 #pragma once
 
 #include <nanopt/core/light.h>
-#include <nanopt/core/triangle.h>
+#include <nanopt/core/mesh.h>
 
 namespace nanopt {
 
 class DiffuseAreaLight : public Light {
 public:
-  DiffuseAreaLight(Triangle* shape, const Spectrum& intensity, bool twoSided = false) noexcept
-    : shape(shape)
+  DiffuseAreaLight(Mesh* mesh, const Spectrum& intensity, bool twoSided = false) noexcept
+    : mesh(mesh)
     , intensity(intensity)
     , twoSided(twoSided) {
 
-    shape->light = this;
+    mesh->light = this;
   }
 
   bool isDelta() const override {
@@ -25,23 +25,19 @@ public:
     return Spectrum(0);
   }
 
-  float pdf(const Interaction& ref, const Vector3f& w) const override {
-    return shape->pdf(ref, w);
-  }
-
   Spectrum sample(
     const Interaction& ref,
-    const Vector2f& sample,
+    Vector2f& u,
     Vector3f& wi, float& pdf, VisibilityTester& tester) const override {
 
-    auto pLight = shape->sample(ref, sample, pdf);
+    auto pLight = mesh->sample(ref, u, pdf);
     wi = normalize(pLight.p - ref.p);
     tester = VisibilityTester(ref, pLight.p);
     return le(pLight, -wi);
   }
 
 public:
-  Triangle* shape;
+  Mesh* mesh;
   Spectrum intensity;
   bool twoSided;
 };

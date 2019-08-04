@@ -3,24 +3,20 @@
 using namespace nanopt;
 
 int main() {
-  std::vector<Light*> lights;
-  std::vector<Triangle> triangles;
+  Scene scene;
 
   auto material = std::make_unique<PlasticMaterial>(Spectrum(0.2f, 0.2f, 0.4f), Spectrum(0.6f), 0.28f, false);
   auto ajaxMesh = loadMeshOBJ("../scenes/ajax.obj");
   ajaxMesh.shadingMode = ShadingMode::Smooth;
-  auto ajaxTriangles = createTriangleMesh(ajaxMesh, material.get());
-  triangles.insert(triangles.begin(), ajaxTriangles.begin(), ajaxTriangles.end());
+  ajaxMesh.material = material.get();
+  scene.addMesh(ajaxMesh);
 
   auto lightMesh = loadMeshOBJ("../scenes/light.obj");
-  auto ligthTriangles = createTriangleMesh(lightMesh);
-  for (auto& triangle : ligthTriangles)
-    lights.push_back(new DiffuseAreaLight(&triangle, Spectrum(20), true));
-  triangles.insert(triangles.begin(), ligthTriangles.begin(), ligthTriangles.end());
+  auto light = new DiffuseAreaLight(&lightMesh, Spectrum(20), true);
+  scene.addLight(light);
+  scene.activate();
 
-  BVHAccel accel(std::move(triangles));
   Film film(Vector2i(768, 768));
-  Scene scene(accel, std::move(lights));
 
   PerspectiveCamera camera(
     Matrix4::lookAt(

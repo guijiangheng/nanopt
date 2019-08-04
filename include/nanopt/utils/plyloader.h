@@ -1,6 +1,6 @@
 #pragma once
 
-#include <nanopt/core/triangle.h>
+#include <nanopt/core/mesh.h>
 
 namespace nanopt {
 

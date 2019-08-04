@@ -1,9 +1,6 @@
 #pragma once
 
-#include <cstdint>
-#include <vector>
 #include <nanopt/core/accel.h>
-#include <nanopt/core/triangle.h>
 
 namespace nanopt {
 
@@ -31,9 +28,9 @@ struct LinearBVHNode {
 
 class BVHAccel : public Accelerator {
 public:
-  enum class BuildMethod { SAH, HLBVH };
+  BVHAccel() noexcept = default;
 
-  BVHAccel(std::vector<Triangle>&& triangles, BuildMethod method = BuildMethod::SAH) noexcept;
+  void build(BuildMethod method = BuildMethod::SAH);
 
   Bounds3f getBounds() const override {
     return nodes[0].bounds;
@@ -49,21 +46,21 @@ private:
     int beg,
     int end,
     int& totalNodes,
-    std::vector<Triangle>& orderedPrims) const;
+    std::vector<int>& orderedPrims) const;
 
   BVHNode* exhaustBuild(
     std::vector<PrimInfo>& primInfos,
     int beg,
     int end,
     int& totalNodes,
-    std::vector<Triangle>& orderedPrims) const;
+    std::vector<int>& orderedPrims) const;
 
   BVHNode* sahBuild(
     std::vector<PrimInfo>& primInfos,
     int beg,
     int end,
     int& totalNodes,
-    std::vector<Triangle>& orderedPrims) const;
+    std::vector<int>& orderedPrims) const;
 
   BVHNode* exhaustBuildUpper(
     std::vector<BVHNode*>& treelets,
@@ -84,20 +81,19 @@ private:
     int end,
     int& totalNodes,
     std::atomic<int>& orderedPrimsOffset,
-    std::vector<Triangle>& orderedPrims,
+    std::vector<int>& orderedPrims,
     int bitIndex) const;
 
   BVHNode* hierarchicalLinearBuild(
     std::vector<PrimInfo>& primInfos,
     int& totalNodes,
-    std::vector<Triangle>& orderedPrims) const;
+    std::vector<int>& orderedPrims) const;
 
   void destroyBVHTree(const BVHNode* node) const;
 
   void flattenBVHTree(const BVHNode* node);
 
 private:
-  std::vector<Triangle> triangles;
   std::vector<LinearBVHNode> nodes;
   static constexpr int BUCKETS = 16;
   static constexpr int SAH_APPLY_COUNT = 32;

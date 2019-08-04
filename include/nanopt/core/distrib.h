@@ -25,11 +25,12 @@ public:
     return sum;
   }
 
-  int sample(float u, float& pdf) const {
+  int sample(float& u, float& pdf) const {
     auto itr = std::lower_bound(cdf.begin(), cdf.end(), u);
-    auto index = itr - cdf.begin();
-    pdf = cdf[index] - cdf[index - 1];
-    return (int)(index - 1);
+    auto index = itr - cdf.begin() - 1;
+    pdf = cdf[index + 1] - cdf[index];
+    u = (u - cdf[index]) / pdf;
+    return (int)index;
   }
 
 private:
