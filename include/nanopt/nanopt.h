@@ -1,7 +1,10 @@
 #pragma once
 
 #include <nanopt/accelerators/bvh.h>
+
+#include <nanopt/core/distrib.h>
 #include <nanopt/core/parallel.h>
+
 #include <nanopt/cameras/perspective.h>
 
 #include <nanopt/integrators/ao.h>

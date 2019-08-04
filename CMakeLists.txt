@@ -35,8 +35,7 @@ set(
   include/nanopt/core/bxdf.h
   include/nanopt/core/bsdf.h
   include/nanopt/core/camera.h
-  include/nanopt/core/distribution1d.h
-  include/nanopt/core/distribution2d.h
+  include/nanopt/core/distrib.h
   include/nanopt/core/film.h
   include/nanopt/core/frame.h
   include/nanopt/core/fresnel.h
@@ -84,7 +83,6 @@ set(
 set(
   NANOPT_SRCS
   src/accelerators/bvh.cpp
-  src/core/distribution1d.cpp
   src/core/fresnel.cpp
   src/core/integrator.cpp
   src/core/interaction.cpp
