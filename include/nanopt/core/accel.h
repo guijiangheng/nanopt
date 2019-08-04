@@ -30,11 +30,6 @@ public:
     return meshs[itr - primOffset.begin()];
   }
 
-  Bounds3f getBounds(int index) const {
-    auto mesh = findMesh(index);
-    return mesh->getBounds(index);
-  }
-
   virtual void build(BuildMethod method = BuildMethod::SAH) = 0;
 
   virtual Bounds3f getBounds() const = 0;

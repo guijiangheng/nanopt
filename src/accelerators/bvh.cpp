@@ -63,10 +63,11 @@ void BVHAccel::build(BuildMethod method) {
   for (auto i = 0; i < nPrims; ++i)
     primIndices[i] = i;
 
+  auto primIndex = 0;
   std::vector<PrimInfo> primInfos;
-  primInfos.reserve(nPrims);
-  for (auto i = 0; i < nPrims; ++i)
-    primInfos.emplace_back(i, Accelerator::getBounds(i));
+  for (auto mesh : meshs)
+    for (auto i = 0; i < mesh->nTriangles; ++i, ++primIndex)
+      primInfos.emplace_back(primIndex, mesh->getBounds(i));
 
   int totalNodes = 0;
   std::vector<int> orderedPrims;
