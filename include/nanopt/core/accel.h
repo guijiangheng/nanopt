@@ -25,7 +25,7 @@ public:
   }
 
   const Mesh* findMesh(int& index) const {
-    auto itr = std::lower_bound(primOffset.begin(), primOffset.end(), index) - 1;
+    auto itr = std::lower_bound(primOffset.begin(), primOffset.end(), index + 1) - 1;
     index -= *itr;
     return meshs[itr - primOffset.begin()];
   }

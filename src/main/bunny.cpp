@@ -6,6 +6,7 @@ int main() {
   Scene scene;
   auto mesh = loadMeshOBJ("../scenes/bunny.obj");
   scene.addMesh(mesh);
+  scene.activate(BuildMethod::HLBVH);
   Film film(Vector2i(512, 512));
   PerspectiveCamera camera(
     Matrix4::lookAt(

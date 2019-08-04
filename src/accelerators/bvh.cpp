@@ -93,7 +93,7 @@ BVHNode* BVHAccel::createLeafNode(
   auto firstPrimOffset = (int)orderedPrims.size();
   for (auto i = beg; i < end; ++i) {
     bounds.merge(primInfos[i].bounds);
-    orderedPrims.emplace_back(primIndices[i]);
+    orderedPrims.emplace_back(primInfos[i].primIndex);
   }
 
   return new BVHNode(bounds, firstPrimOffset, end - beg);
@@ -366,7 +366,7 @@ BVHNode* BVHAccel::buildTreelet(
     for (auto i = beg; i < end; ++i) {
       auto primIndex = mortonPrims[i].primIndex;
       bounds.merge(primInfos[primIndex].bounds);
-      orderedPrims[orderedPrimsIndex++] = primIndices[primIndex];
+      orderedPrims[orderedPrimsIndex++] = primIndex;
     }
     return new BVHNode(bounds, firstPrimOffset, nPrims);
   }
@@ -556,7 +556,7 @@ bool BVHAccel::intersect(const Ray& ray, Interaction& isect) const {
   Vector3f invDir(1 / ray.d.x, 1 / ray.d.y, 1 / ray.d.z);
   const int dirIsNeg[3] = { invDir.x < 0, invDir.y < 0, invDir.z < 0 };
 
-  int triIndex;
+  int index;
   auto hit = false;
   int nodesToVisit[64];
   nodesToVisit[0] = 0;
@@ -568,9 +568,10 @@ bool BVHAccel::intersect(const Ray& ray, Interaction& isect) const {
     if (node.bounds.intersect(ray, invDir, dirIsNeg)) {
       if (node.nPrims) {
         for (auto i = 0; i < node.nPrims; ++i) {
-          triIndex = primIndices[node.primsOffset + i];
+          auto triIndex = primIndices[node.primsOffset + i];
           auto mesh = findMesh(triIndex);
           if (mesh->intersect(triIndex, ray, isect)) {
+            index = triIndex;
             hit = true;
             isect.mesh = mesh;
           }
@@ -588,7 +589,7 @@ bool BVHAccel::intersect(const Ray& ray, Interaction& isect) const {
   }
 
   if (hit) {
-    isect.mesh->computeIntersection(triIndex, isect);
+    isect.mesh->computeIntersection(index, isect);
     isect.wo = -ray.d;
   }
 
