@@ -86,6 +86,7 @@ set(
   src/core/fresnel.cpp
   src/core/integrator.cpp
   src/core/interaction.cpp
+  src/core/mesh.cpp
   src/core/triangle.cpp
   src/core/parallel.cpp
   src/core/visibilitytester.cpp
