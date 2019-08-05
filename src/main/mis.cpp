@@ -11,31 +11,36 @@ int main() {
     Matrix4::translate(-1.25f, 0, 0) * Matrix4::scale(0.1f, 0.1f, 0.1f),
     sphere
   );
-  scene.addLight(new DiffuseAreaLight(&sphere1, Spectrum(100)));
+  sphere1.light = new DiffuseAreaLight(&sphere1, Spectrum(100));
+  scene.addMesh(sphere1);
 
   auto sphere2 = Mesh(
     Matrix4::translate(-3.75f, 0, 0) * Matrix4::scale(0.0333f, 0.0333f, 0.0333f),
     sphere
   );
-  scene.addLight(new DiffuseAreaLight(&sphere2, Spectrum(901.803f)));
+  sphere2.light = new DiffuseAreaLight(&sphere2, Spectrum(901.803f));
+  scene.addMesh(sphere2);
 
   auto sphere3 = Mesh(
     Matrix4::translate(1.25f, 0, 0) * Matrix4::scale(0.3f, 0.3f, 0.3f),
     sphere
   );
-  scene.addLight(new DiffuseAreaLight(&sphere3, Spectrum(11.1111f)));
+  sphere3.light = new DiffuseAreaLight(&sphere3, Spectrum(11.1111f));
+  scene.addMesh(sphere3);
 
   auto sphere4 = Mesh(
     Matrix4::translate(3.75f, 0, 0) * Matrix4::scale(0.9f, 0.9f, 0.9f),
     sphere
   );
-  scene.addLight(new DiffuseAreaLight(&sphere4, Spectrum(1.23457f)));
+  sphere4.light = new DiffuseAreaLight(&sphere4, Spectrum(1.23457f));
+  scene.addMesh(sphere4);
 
   auto sphere5 = Mesh(
     Matrix4::translate(0, 4, -3),
     sphere
   );
-  scene.addLight(new DiffuseAreaLight(&sphere5, Spectrum(100.0f)));
+  sphere5.light = new DiffuseAreaLight(&sphere5, Spectrum(100.0f));
+  scene.addMesh(sphere5);
 
   auto plate1Material = std::make_unique<PlasticMaterial>(
     Spectrum(0.0175f, 0.0225f, 0.0325f),

@@ -21,7 +21,7 @@ Mesh::Mesh(
 
   for (auto i = 0; i < nTriangles; ++i)
     discretePdf.append(getArea(i));
-  discretePdf.normalize();
+  totalArea = discretePdf.normalize();
 }
 
 Mesh::Mesh(const Matrix4& frame, const Mesh& mesh)
@@ -53,7 +53,7 @@ Mesh::Mesh(const Matrix4& frame, const Mesh& mesh)
 
   for (auto i = 0; i < nTriangles; ++i)
     discretePdf.append(getArea(i));
-  discretePdf.normalize();
+  totalArea = discretePdf.normalize();
 }
 
 Interaction Mesh::sample(int index, const Vector2f& u, float& pdf) const {

@@ -12,7 +12,8 @@ public:
   { }
 
   static float powerHeuristic(float a, float b) {
-    return (a * a) / (a * a + b * b);
+    return a / (a + b);
+    // return (a * a) / (a * a + b * b);
   }
 
   Spectrum li(const Ray& ray, const Scene& scene) const override;

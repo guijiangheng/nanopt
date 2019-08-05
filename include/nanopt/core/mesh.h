@@ -30,7 +30,7 @@ public:
   Mesh(const Matrix4& frame, const Mesh& mesh);
 
   bool isLight() const {
-    return light == nullptr;
+    return light != nullptr;
   }
 
   float getArea(int index) const {
@@ -68,6 +68,7 @@ public:
   Material* material;
   DiffuseAreaLight* light;
   Distribution1D discretePdf;
+  float totalArea;
 };
 
 }

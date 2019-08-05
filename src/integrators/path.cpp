@@ -72,32 +72,34 @@ Spectrum PathIntegrator::estimateDirect(
     ld += f * li * powerHeuristic(lightPdf, scatteringPdf) / lightPdf;
   }
 
-  // if (!light.isDelta() && !isect.bsdf->isDelta()) {
-  //   float etaScale;
-  //   float scatteringPdf;
-  //   f = isect.bsdf->sample(sampler.get2D(), isect.wo, wi, scatteringPdf, etaScale);
-  //   f *= absdot(isect.ns, wi);
+  if (!light.isDelta() && !isect.bsdf->isDelta()) {
+    float etaScale;
+    float scatteringPdf;
+    f = isect.bsdf->sample(sampler.get2D(), isect.wo, wi, scatteringPdf, etaScale);
+    f *= absdot(isect.ns, wi);
 
-  //   if (!f.isBlack()) {
-  //     lightPdf = light.pdf(isect, wi);
-  //     if (lightPdf == 0) return ld;
+    if (!f.isBlack()) {
+      Interaction lightIsect;
+      auto ray = isect.spawnRay(wi);
+      auto foundIntersection = scene.intersect(ray, lightIsect);
+      auto li = Spectrum(0);
+      if (foundIntersection) {
+        if ((Light*)lightIsect.mesh->light == &light) {
+          li = lightIsect.le(-wi);
+          lightPdf = 1 / lightIsect.mesh->totalArea;
+          auto dist = lightIsect.p - isect.p;
+          lightPdf *= dist.lengthSquared();
+          lightPdf /= absdot(lightIsect.n, normalize(dist));
+        }
+      } else {
+        li = ((InfiniteAreaLight*)&light)->le(ray);
+      }
 
-  //     Interaction lightIsect;
-  //     auto ray = isect.spawnRay(wi);
-  //     auto foundIntersection = scene.intersect(ray, lightIsect);
-  //     auto li = Spectrum(0);
-  //     if (foundIntersection) {
-  //       if ((Light*)lightIsect.triangle->light == &light)
-  //         li = lightIsect.le(-wi);
-  //     } else {
-  //       li = ((InfiniteAreaLight*)&light)->le(ray);
-  //     }
-
-  //     if (!li.isBlack()) {
-  //       ld += f * li * powerHeuristic(scatteringPdf, lightPdf) / scatteringPdf;
-  //     }
-  //   }
-  // }
+      if (!li.isBlack()) {
+        ld += f * li * powerHeuristic(scatteringPdf, lightPdf) / scatteringPdf;
+      }
+    }
+  }
 
   return ld;
 }
