@@ -30,7 +30,7 @@ class BVHAccel : public Accelerator {
 public:
   BVHAccel() noexcept = default;
 
-  void build(BuildMethod method = BuildMethod::SAH);
+  void build(BuildMethod method = BuildMethod::SAH) override;
 
   Bounds3f getBounds() const override {
     return nodes[0].bounds;

@@ -59,16 +59,12 @@ public:
 
     for (auto i = 0; i < nBxDFs; ++i) {
       if (i == n) continue;
+      f += bxdfs[i]->f(wo, wi);
       pdf += bxdfs[i]->pdf(wo, wi);
     }
 
     pdf /= nBxDFs;
     wiWorld = toWorld(wi);
-
-    for (auto i = 0; i < nBxDFs; ++i) {
-      if (i == n) continue;
-      f += bxdfs[i]->f(wo, wi);
-    }
 
     return f;
   }

@@ -33,7 +33,8 @@ int main() {
   scene.addMesh(sphere2Mesh);
 
   auto lightMesh = loadMeshOBJ("../scenes/cbox/light.obj");
-  scene.addLight(new DiffuseAreaLight(&lightMesh, Spectrum(40)));
+  lightMesh.light = new DiffuseAreaLight(&lightMesh, Spectrum(40));
+  scene.addMesh(lightMesh);
 
   scene.activate();
 
@@ -50,7 +51,7 @@ int main() {
     27.7856
   );
 
-  RandomSampler sampler(32);
+  RandomSampler sampler(256);
   PathIntegrator integrator(camera, sampler, 10);
   parallelInit();
   integrator.render(scene);

@@ -1,4 +1,3 @@
-#include <memory>
 #include <nanopt/core/bsdf.h>
 #include <nanopt/core/visibilitytester.h>
 #include <nanopt/lights/infinite.h>
@@ -56,52 +55,77 @@ Spectrum PathIntegrator::estimateDirect(
   const Light& light,
   const Scene& scene) const {
 
+  // Vector3f wi;
+  // float lightPdf;
+  // VisibilityTester tester;
+  // auto sample = sampler.get2D();
+  // auto li = light.sample(isect, sample, wi, lightPdf, tester);
+  // if (li.isBlack()) return Spectrum(0);
+
+  if (light.isDelta() || isect.bsdf->isDelta())
+    return Spectrum(0);
+
   Vector3f wi;
-  float lightPdf;
-  VisibilityTester tester;
-  auto sample = sampler.get2D();
-  auto li = light.sample(isect, sample, wi, lightPdf, tester);
+  float etaScale;
+  float scatteringPdf;
+  auto f = isect.bsdf->sample(sampler.get2D(), isect.wo, wi, scatteringPdf, etaScale);
+  f *= absdot(isect.ns, wi);
+  if (f.isBlack()) return Spectrum(0);
+
+  Interaction lightIsect;
+  auto ray = isect.spawnRay(wi);
+  auto foundIntersection = scene.intersect(ray, lightIsect);
+
+  Spectrum li;
+  if (foundIntersection) {
+    li = lightIsect.le(-wi);
+  } else if (scene.infiniteLight) {
+    li = scene.infiniteLight->le(ray);
+  }
+
   if (li.isBlack()) return Spectrum(0);
 
-  auto ld = Spectrum(0);
-  auto f = isect.bsdf->f(isect.wo, wi) * absdot(isect.ns, wi);
-  if (!f.isBlack() && tester.unoccluded(scene)) {
-    if (light.isDelta())
-      return f * li / lightPdf;
-    auto scatteringPdf = isect.bsdf->pdf(isect.wo, wi);
-    ld += f * li * powerHeuristic(lightPdf, scatteringPdf) / lightPdf;
-  }
+  return f * li / scatteringPdf;
 
-  if (!light.isDelta() && !isect.bsdf->isDelta()) {
-    float etaScale;
-    float scatteringPdf;
-    f = isect.bsdf->sample(sampler.get2D(), isect.wo, wi, scatteringPdf, etaScale);
-    f *= absdot(isect.ns, wi);
+  // auto ld = Spectrum(0);
+  // auto f = isect.bsdf->f(isect.wo, wi) * absdot(isect.ns, wi);
+  // if (!f.isBlack() && tester.unoccluded(scene)) {
+  //   if (light.isDelta())
+  //     return f * li / lightPdf;
+  //   auto scatteringPdf = isect.bsdf->pdf(isect.wo, wi);
+  //   ld += f * li * powerHeuristic(lightPdf, scatteringPdf) / lightPdf;
+  // }
 
-    if (!f.isBlack()) {
-      Interaction lightIsect;
-      auto ray = isect.spawnRay(wi);
-      auto foundIntersection = scene.intersect(ray, lightIsect);
-      auto li = Spectrum(0);
-      if (foundIntersection) {
-        if ((Light*)lightIsect.mesh->light == &light) {
-          li = lightIsect.le(-wi);
-          lightPdf = 1 / lightIsect.mesh->totalArea;
-          auto dist = lightIsect.p - isect.p;
-          lightPdf *= dist.lengthSquared();
-          lightPdf /= absdot(lightIsect.n, normalize(dist));
-        }
-      } else {
-        li = ((InfiniteAreaLight*)&light)->le(ray);
-      }
+  // if (!light.isDelta() && !isect.bsdf->isDelta()) {
+  //   float etaScale;
+  //   float scatteringPdf;
+  //   f = isect.bsdf->sample(sampler.get2D(), isect.wo, wi, scatteringPdf, etaScale);
+  //   f *= absdot(isect.ns, wi);
 
-      if (!li.isBlack()) {
-        ld += f * li * powerHeuristic(scatteringPdf, lightPdf) / scatteringPdf;
-      }
-    }
-  }
+  //   if (!f.isBlack()) {
+  //     Interaction lightIsect;
+  //     auto ray = isect.spawnRay(wi);
+  //     auto foundIntersection = scene.intersect(ray, lightIsect);
+  //     auto li = Spectrum(0);
+  //     if (foundIntersection) {
+  //       if ((Light*)lightIsect.mesh->light == &light) {
+  //         li = lightIsect.le(-wi);
+  //         lightPdf = 1 / lightIsect.mesh->totalArea;
+  //         auto dist = lightIsect.p - isect.p;
+  //         lightPdf *= dist.lengthSquared();
+  //         lightPdf /= absdot(lightIsect.n, normalize(dist));
+  //       }
+  //     } else {
+  //       li = ((InfiniteAreaLight*)&light)->le(ray);
+  //     }
 
-  return ld;
+  //     if (!li.isBlack()) {
+  //       ld += f * li * powerHeuristic(scatteringPdf, lightPdf) / scatteringPdf;
+  //     }
+  //   }
+  // }
+
+  // return ld;
 }
 
 }
