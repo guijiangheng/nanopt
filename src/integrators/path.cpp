@@ -25,7 +25,7 @@ Spectrum PathIntegrator::li(const Ray& ray, const Scene& scene) const {
     if (!foundIntersection) break;
     isect.computeScatteringFunctions();
     if (!isect.bsdf) break;
-    l += beta * sampleOneLight(isect, scene);
+    l += beta * estimateDirect(isect, scene);
 
     float etaScale;
     float scatteringPdf;
@@ -52,7 +52,6 @@ Spectrum PathIntegrator::li(const Ray& ray, const Scene& scene) const {
 
 Spectrum PathIntegrator::estimateDirect(
   const Interaction& isect,
-  const Light& light,
   const Scene& scene) const {
 
   // Vector3f wi;
@@ -62,7 +61,7 @@ Spectrum PathIntegrator::estimateDirect(
   // auto li = light.sample(isect, sample, wi, lightPdf, tester);
   // if (li.isBlack()) return Spectrum(0);
 
-  if (light.isDelta() || isect.bsdf->isDelta())
+  if (isect.bsdf->isDelta())
     return Spectrum(0);
 
   Vector3f wi;

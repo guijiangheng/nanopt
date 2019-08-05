@@ -45,7 +45,7 @@ public:
     auto wh = distribution->sample(sample);
     wi = reflect(wo, wh);
     if (!sameHemisphere(wo, wi)) return Spectrum(0);
-    pdf = distribution->pdf(wh) / (4 * dot(wo, wh));
+    pdf = distribution->pdf(wh) / (4 * absdot(wo, wh));
     return f(wo, wi);
   }
 
