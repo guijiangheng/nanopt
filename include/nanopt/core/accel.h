@@ -16,7 +16,7 @@ public:
   virtual ~Accelerator() = default;
 
   void addMesh(const Mesh& mesh) {
-    meshs.push_back(&mesh);
+    meshes.push_back(&mesh);
     primOffset.push_back(primOffset.back() + mesh.nTriangles);
   }
 
@@ -27,7 +27,7 @@ public:
   const Mesh* findMesh(int& index) const {
     auto itr = std::lower_bound(primOffset.begin(), primOffset.end(), index + 1) - 1;
     index -= *itr;
-    return meshs[itr - primOffset.begin()];
+    return meshes[itr - primOffset.begin()];
   }
 
   virtual void build(BuildMethod method = BuildMethod::SAH) = 0;
@@ -41,7 +41,7 @@ public:
 protected:
   std::vector<int> primOffset;
   std::vector<int> primIndices;
-  std::vector<const Mesh*> meshs;
+  std::vector<const Mesh*> meshes;
 };
 
 }

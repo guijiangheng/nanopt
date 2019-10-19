@@ -31,6 +31,7 @@ set(
   include/nanopt/bxdfs/fresnelspecular.h
   include/nanopt/bxdfs/microfacetreflection.h
 
+  include/nanopt/core/timer.h
   include/nanopt/core/accel.h
   include/nanopt/core/bxdf.h
   include/nanopt/core/bsdf.h

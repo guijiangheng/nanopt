@@ -1,3 +1,5 @@
+#include <iostream>
+#include <nanopt/core/timer.h>
 #include <nanopt/core/integrator.h>
 
 namespace nanopt {
@@ -9,6 +11,10 @@ void Integrator::render(const Scene& scene) {
   Vector2i nTiles(
     (diag.x + TileSize - 1) / TileSize,
     (diag.y + TileSize - 1) / TileSize);
+
+  std::cout << "Rendering ..";
+  std::cout.flush();
+  Timer timer;
 
   parallelFor2D([&](const Vector2i& tile) {
     auto x0 = pixelBounds.pMin.x + TileSize * tile.x;
@@ -35,6 +41,8 @@ void Integrator::render(const Scene& scene) {
       camera.film.pixels[offsetY * diag.x + offsetX] = l / tileSampler->samplesPerPixel;
     }
   }, nTiles);
+
+  std::cout << "done. (took " << timer.elapsedString() << ")" << std::endl;
 }
 
 }

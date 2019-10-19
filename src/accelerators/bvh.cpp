@@ -1,6 +1,9 @@
+#include <iostream>
 #include <memory>
 #include <atomic>
 #include <algorithm>
+
+#include <nanopt/core/timer.h>
 #include <nanopt/core/parallel.h>
 #include <nanopt/accelerators/bvh.h>
 
@@ -59,13 +62,21 @@ struct LBVHTreelet {
 
 void BVHAccel::build(BuildMethod method) {
   auto nPrims = getPrimitiveCount();
+
+  std::cout
+    << "Constructing a SAH BVH (" << meshes.size()
+    << (meshes.size() == 1 ? " shape, " : " shapes, ")
+    << nPrims << " primitives) .. ";
+
+  Timer timer;
+
   primIndices.resize(nPrims);
   for (auto i = 0; i < nPrims; ++i)
     primIndices[i] = i;
 
   auto primIndex = 0;
   std::vector<PrimInfo> primInfos;
-  for (auto mesh : meshs)
+  for (auto mesh : meshes)
     for (auto i = 0; i < mesh->nTriangles; ++i, ++primIndex)
       primInfos.emplace_back(primIndex, mesh->getBounds(i));
 
@@ -80,6 +91,11 @@ void BVHAccel::build(BuildMethod method) {
   nodes.reserve(totalNodes);
   flattenBVHTree(root);
   destroyBVHTree(root);
+
+  std::cout
+    << "done (took " << timer.elapsedString() << " and "
+    << memString(sizeof(BVHNode) * nodes.size() + sizeof(std::uint32_t) * primIndices.size())
+    << ")." << std::endl;
 }
 
 BVHNode* BVHAccel::createLeafNode(
