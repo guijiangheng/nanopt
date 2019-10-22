@@ -29,7 +29,7 @@ public:
     float& etaScale) const {
 
     etaScale = 1.0f;
-    wi = consineSampleHemisphere(sample);
+    wi = cosineSampleHemisphere(sample);
     if (wo.z < 0) wi.z = -wi.z;
     pdf = absCosTheta(wi) * InvPi;
 

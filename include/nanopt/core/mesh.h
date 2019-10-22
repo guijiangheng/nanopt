@@ -34,17 +34,19 @@ public:
   }
 
   float getArea(int index) const {
-    auto& a = p[indices[3 * index]];
-    auto& b = p[indices[3 * index + 1]];
-    auto& c = p[indices[3 * index + 2]];
+    auto offset = 3 * index;
+    auto& a = p[indices[offset]];
+    auto& b = p[indices[offset + 1]];
+    auto& c = p[indices[offset + 2]];
     return cross(b - a, b - c).length() / 2;
   }
 
   Bounds3f getBounds(int index) const {
-    auto& a = p[indices[3 * index]];
-    auto& b = p[indices[3 * index + 1]];
-    auto& c = p[indices[3 * index + 2]];
-    return merge(Bounds3(a, b), c);
+    auto offset = 3 * index;
+    auto& a = p[indices[offset]];
+    auto& b = p[indices[offset + 1]];
+    auto& c = p[indices[offset + 2]];
+    return merge(Bounds3f(min(a, b), max(a, b)), c);
   }
 
   Interaction sample(int index, const Vector2f& u, float& pdf) const;

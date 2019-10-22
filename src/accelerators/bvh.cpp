@@ -66,7 +66,7 @@ void BVHAccel::build(BuildMethod method) {
   std::cout
     << "Constructing a SAH BVH (" << meshes.size()
     << (meshes.size() == 1 ? " shape, " : " shapes, ")
-    << nPrims << " primitives) .. ";
+    << nPrims << " primitives) .. " << std::endl;
 
   Timer timer;
 
@@ -92,9 +92,13 @@ void BVHAccel::build(BuildMethod method) {
   flattenBVHTree(root);
   destroyBVHTree(root);
 
+  auto cost = statistics(0);
+
   std::cout
     << "done (took " << timer.elapsedString() << " and "
-    << memString(sizeof(BVHNode) * nodes.size() + sizeof(std::uint32_t) * primIndices.size())
+    << memString(sizeof(LinearBVHNode) * nodes.size() + sizeof(std::uint32_t) * primIndices.size())
+    << ", SAH cost = " << cost
+    << ", node size = " << totalNodes
     << ")." << std::endl;
 }
 

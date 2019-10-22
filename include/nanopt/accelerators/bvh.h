@@ -36,6 +36,19 @@ public:
     return nodes[0].bounds;
   }
 
+  float statistics(int nodeIndex) const {
+    auto& node = nodes[nodeIndex];
+    if (node.nPrims)
+      return node.nPrims;
+    auto left = statistics(nodeIndex + 1);
+    auto right = statistics(node.rightChild);
+    auto area = node.bounds.area();
+    auto leftArea = nodes[nodeIndex + 1].bounds.area();
+    auto rightArea = nodes[node.rightChild].bounds.area();
+    return AABB_SHAPE_INTERSECT_COST_RATIO +
+      (left * leftArea + right * rightArea) / area;
+  }
+
   bool intersect(const Ray& ray) const override;
 
   bool intersect(const Ray& ray, Interaction& isect) const override;
@@ -97,7 +110,7 @@ private:
   std::vector<LinearBVHNode> nodes;
   static constexpr int BUCKETS = 16;
   static constexpr int SAH_APPLY_COUNT = 32;
-  static constexpr float AABB_SHAPE_INTERSECT_COST_RATIO = 1.0f / 4;
+  static constexpr float AABB_SHAPE_INTERSECT_COST_RATIO = 1.0f / 2;
 };
 
 }

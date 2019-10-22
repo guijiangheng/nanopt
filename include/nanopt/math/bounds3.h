@@ -17,8 +17,7 @@ public:
   explicit Bounds3(const Vector3<T>& p) noexcept : pMin(p), pMax(p)
   { }
 
-  Bounds3(const Vector3<T>& a, const Vector3<T>& b) noexcept
-    : pMin(min(a, b)), pMax(max(a, b))
+  Bounds3(const Vector3<T>& pMin, const Vector3<T>& pMax) noexcept : pMin(pMin), pMax(pMax)
   { }
 
   const Vector3<T>& operator[](int index) const {
